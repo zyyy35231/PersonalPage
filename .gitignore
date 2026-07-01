@@ -1,0 +1,6 @@
+.DS_Store
+/Photos/
+!/assets/photos/
+!/assets/photos/**
+__pycache__/
+*.pyc
