@@ -59,6 +59,8 @@ python3 tools/curate-photos.py --source /Users/zy/Desktop/Lightroom
 python3 tools/prepare-photos.py your-photo.jpg
 ```
 
+选片工作台里，单击照片只会移动选框并在右侧预览；在当前照片上按空格会在“入选/未筛”之间切换。方向键可在网格里移动选框，数字键 `1`/`2`/`3`/`0` 分别设为入选/备选/淘汰/未筛。右上角“刷新”会重新加载本地工作台页面。
+
 如果不传文件名，工具会处理 `Photos/` 里的所有图片。
 
 ## 当前首轮作品

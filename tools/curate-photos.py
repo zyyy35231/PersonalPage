@@ -300,6 +300,7 @@ HTML = r"""<!doctype html>
 
     .photo-button.is-active .thumb {
       border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(143, 78, 54, 0.18);
     }
 
     .thumb img {
@@ -320,17 +321,25 @@ HTML = r"""<!doctype html>
       position: absolute;
       top: 8px;
       left: 8px;
-      width: 12px;
-      height: 12px;
+      width: 22px;
+      height: 22px;
+      display: grid;
+      place-items: center;
       border-radius: 999px;
       background: rgba(255, 255, 255, 0.84);
       border: 1px solid rgba(0, 0, 0, 0.18);
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.18);
+      color: white;
+      font-size: 14px;
+      line-height: 1;
     }
 
     .photo-button[data-status="selected"] .status-dot { background: var(--selected); }
     .photo-button[data-status="maybe"] .status-dot { background: var(--maybe); }
     .photo-button[data-status="rejected"] .status-dot { background: var(--rejected); }
+    .photo-button[data-status="selected"] .status-dot::before { content: "✓"; }
+    .photo-button[data-status="maybe"] .status-dot::before { content: "?"; }
+    .photo-button[data-status="rejected"] .status-dot::before { content: "×"; }
 
     .detail {
       min-width: 0;
@@ -346,7 +355,9 @@ HTML = r"""<!doctype html>
       display: grid;
       place-items: center;
       padding: 18px;
-      background: var(--dark);
+      background:
+        linear-gradient(135deg, rgba(255, 255, 255, 0.52), rgba(230, 225, 216, 0.72)),
+        #e8e3da;
     }
 
     .preview img {
@@ -357,7 +368,7 @@ HTML = r"""<!doctype html>
     }
 
     .empty {
-      color: rgba(255, 255, 255, 0.68);
+      color: var(--muted);
       font-size: 14px;
     }
 
@@ -655,6 +666,22 @@ HTML = r"""<!doctype html>
       renderDetail();
     }
 
+    function setActiveIndex(index, shouldFocus = false) {
+      const visible = visiblePhotos();
+      if (!visible.length) {
+        activeIndex = -1;
+        renderDetail();
+        return;
+      }
+      activeIndex = Math.max(0, Math.min(visible.length - 1, index));
+      renderDetail();
+      const button = document.querySelector(`.photo-button[data-index="${activeIndex}"]`);
+      if (button) {
+        button.scrollIntoView({ block: "nearest", inline: "nearest" });
+        if (shouldFocus) button.focus({ preventScroll: true });
+      }
+    }
+
     function renderDetail() {
       const photo = activePhoto();
       statusButtons.forEach((button) => button.classList.remove("is-active"));
@@ -683,10 +710,12 @@ HTML = r"""<!doctype html>
     function moveSelection(step) {
       const visible = visiblePhotos();
       if (!visible.length) return;
-      activeIndex = Math.max(0, Math.min(visible.length - 1, activeIndex + step));
-      renderDetail();
-      const button = document.querySelector(`.photo-button[data-index="${activeIndex}"]`);
-      if (button) button.scrollIntoView({ block: "nearest", inline: "nearest" });
+      setActiveIndex(activeIndex + step, true);
+    }
+
+    function gridColumnCount() {
+      const columns = window.getComputedStyle(photoGrid).gridTemplateColumns;
+      return Math.max(1, columns.split(" ").filter(Boolean).length);
     }
 
     async function loadSummary() {
@@ -718,9 +747,15 @@ HTML = r"""<!doctype html>
     function queueSave(patch) {
       const photo = activePhoto();
       if (!photo) return;
+      const statusChanged = Object.prototype.hasOwnProperty.call(patch, "status");
+      const seriesChanged = Object.prototype.hasOwnProperty.call(patch, "series");
       Object.assign(photo, patch);
       saveState.textContent = "Saving...";
-      renderPhotos();
+      if (statusChanged) {
+        renderPhotos();
+      } else if (seriesChanged) {
+        renderDetail();
+      }
       clearTimeout(saveTimer);
       saveTimer = setTimeout(async () => {
         try {
@@ -737,11 +772,19 @@ HTML = r"""<!doctype html>
           await loadSummary();
           const current = appState.folders.find((folder) => folder.key === activeFolder);
           if (current) folderMeta.textContent = formatCount(current.stats);
-          renderPhotos();
+          if (statusChanged) {
+            renderPhotos();
+          }
         } catch (error) {
           saveState.textContent = error.message;
         }
       }, 220);
+    }
+
+    function toggleSelected() {
+      const photo = activePhoto();
+      if (!photo) return;
+      queueSave({ status: photo.status === "selected" ? "unreviewed" : "selected" });
     }
 
     folderList.addEventListener("click", (event) => {
@@ -752,8 +795,7 @@ HTML = r"""<!doctype html>
     photoGrid.addEventListener("click", (event) => {
       const target = event.target.closest("[data-index]");
       if (!target) return;
-      activeIndex = Number(target.dataset.index);
-      renderDetail();
+      setActiveIndex(Number(target.dataset.index), true);
     });
 
     statusButtons.forEach((button) => {
@@ -764,7 +806,7 @@ HTML = r"""<!doctype html>
     seriesSelect.addEventListener("change", () => queueSave({ series: seriesSelect.value }));
     noteInput.addEventListener("input", () => queueSave({ note: noteInput.value }));
     statusFilter.addEventListener("change", renderPhotos);
-    refreshButton.addEventListener("click", refreshAll);
+    refreshButton.addEventListener("click", () => window.location.reload());
 
     document.addEventListener("keydown", (event) => {
       if (event.target === noteInput) return;
@@ -775,6 +817,18 @@ HTML = r"""<!doctype html>
       if (event.key === "ArrowRight") {
         event.preventDefault();
         moveSelection(1);
+      }
+      if (event.key === "ArrowUp") {
+        event.preventDefault();
+        moveSelection(-gridColumnCount());
+      }
+      if (event.key === "ArrowDown") {
+        event.preventDefault();
+        moveSelection(gridColumnCount());
+      }
+      if (event.key === " ") {
+        event.preventDefault();
+        toggleSelected();
       }
       if (event.key === "1") queueSave({ status: "selected" });
       if (event.key === "2") queueSave({ status: "maybe" });
