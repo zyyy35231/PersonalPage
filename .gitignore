@@ -1,5 +1,6 @@
 .DS_Store
 /Photos/
+/.curation/
 !/assets/photos/
 !/assets/photos/**
 __pycache__/
