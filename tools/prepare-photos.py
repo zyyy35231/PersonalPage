@@ -101,13 +101,13 @@ def main() -> None:
     parser.add_argument("--force", action="store_true", help="Regenerate existing web images.")
     parser.add_argument("--from-curation", help="Read selected source photos from a curation draft JSON file.")
     parser.add_argument("--curation-status", default="selected", help="Curation status to import. Defaults to selected.")
+    parser.add_argument("--replace-data", action="store_true", help="Replace the data file with imported entries.")
+    parser.add_argument("--featured-first", type=int, default=0, help="Mark the first N imported entries as featured.")
     args = parser.parse_args()
 
     source = Path(args.source)
     out_dir = Path(args.out)
     data_path = Path(args.data)
-    entries = read_existing_data(data_path)
-    known_ids = {entry["id"] for entry in entries}
     if args.from_curation:
         curation_items = curation_entries(Path(args.from_curation), args.curation_status)
         if not curation_items:
@@ -116,8 +116,10 @@ def main() -> None:
         work_items = [(Path(item["sourcePath"]), item, curation_slug(Path(item["sourcePath"]))) for item in curation_items]
     else:
         work_items = [(path, None, slugify(path.stem)) for path in source_files(source, args.files)]
+    entries = [] if args.replace_data else read_existing_data(data_path)
+    known_ids = {entry["id"] for entry in entries}
 
-    for path, curation, slug in work_items:
+    for index, (path, curation, slug) in enumerate(work_items):
         image_out = out_dir / f"{slug}.jpg"
         thumb_out = out_dir / "thumbs" / f"{slug}.jpg"
 
@@ -125,7 +127,9 @@ def main() -> None:
         write_web_jpeg(path, thumb_out, args.thumb_edge, args.thumb_quality, args.force)
 
         if slug not in known_ids:
-            entries.append(draft_entry(path, slug, width, height, out_dir, curation))
+            entry = draft_entry(path, slug, width, height, out_dir, curation)
+            entry["featured"] = index < args.featured_first
+            entries.append(entry)
             known_ids.add(slug)
 
         print(f"prepared {path.name} -> {image_out}")
