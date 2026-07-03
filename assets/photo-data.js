@@ -8,6 +8,7 @@ window.ZY_PHOTOS = [
     "thumb": "assets/photos/thumbs/zy-crescent-moon.jpg",
     "alt": "深蓝夜空中半轮月亮的近景",
     "orientation": "square",
+    "color": "#b6a6a3",
     "featured": true,
     "cameraMeta": "Moon study"
   },
@@ -20,6 +21,7 @@ window.ZY_PHOTOS = [
     "thumb": "assets/photos/thumbs/zy-soft-moon.jpg",
     "alt": "蓝色天空中一轮被薄雾包围的月亮",
     "orientation": "square",
+    "color": "#11293e",
     "featured": false,
     "cameraMeta": "Moon study"
   },
@@ -32,6 +34,7 @@ window.ZY_PHOTOS = [
     "thumb": "assets/photos/thumbs/zy-golden-wader.jpg",
     "alt": "金色水面上涉水鸟的剪影",
     "orientation": "square",
+    "color": "#dda466",
     "featured": true,
     "cameraMeta": "Backlit water"
   },
@@ -44,6 +47,7 @@ window.ZY_PHOTOS = [
     "thumb": "assets/photos/thumbs/zy-butterfly-blossom.jpg",
     "alt": "蝴蝶停在白色花朵上的浅景深照片",
     "orientation": "landscape",
+    "color": "#a8a39a",
     "featured": true,
     "cameraMeta": "Close observation"
   },
@@ -56,6 +60,7 @@ window.ZY_PHOTOS = [
     "thumb": "assets/photos/thumbs/zy-white-blossom.jpg",
     "alt": "白色花朵在明亮背景中的近景",
     "orientation": "landscape",
+    "color": "#d8c399",
     "featured": false,
     "cameraMeta": "Close observation"
   },
@@ -68,6 +73,7 @@ window.ZY_PHOTOS = [
     "thumb": "assets/photos/thumbs/zy-amber-cloud.jpg",
     "alt": "云层边缘出现彩色光带的远景",
     "orientation": "landscape",
+    "color": "#8f6f5a",
     "featured": true,
     "cameraMeta": "Iridescent cloud"
   },
@@ -80,6 +86,7 @@ window.ZY_PHOTOS = [
     "thumb": "assets/photos/thumbs/zy-cloud-crown.jpg",
     "alt": "深色云层上方形成明亮彩色边缘",
     "orientation": "landscape",
+    "color": "#356384",
     "featured": true,
     "cameraMeta": "Iridescent cloud"
   },
@@ -92,6 +99,7 @@ window.ZY_PHOTOS = [
     "thumb": "assets/photos/thumbs/zy-sunset-panorama.jpg",
     "alt": "城市与山线之上的红紫色晚霞全景",
     "orientation": "panorama",
+    "color": "#595375",
     "featured": false,
     "cameraMeta": "Panorama"
   },
@@ -104,6 +112,7 @@ window.ZY_PHOTOS = [
     "thumb": "assets/photos/thumbs/zy-rainbow-courtyard.jpg",
     "alt": "建筑上方雨后彩虹的宽幅照片",
     "orientation": "landscape",
+    "color": "#937f73",
     "featured": false,
     "cameraMeta": "Rainbow"
   },
@@ -116,6 +125,7 @@ window.ZY_PHOTOS = [
     "thumb": "assets/photos/thumbs/zy-moon-pavilion.jpg",
     "alt": "夜色中月亮与亭子同框的竖幅照片",
     "orientation": "portrait",
+    "color": "#525262",
     "featured": false,
     "cameraMeta": "Moon and structure"
   },
@@ -128,6 +138,7 @@ window.ZY_PHOTOS = [
     "thumb": "assets/photos/thumbs/zy-water-glimmer.jpg",
     "alt": "深蓝水面上细碎反光的照片",
     "orientation": "landscape",
+    "color": "#223e51",
     "featured": true,
     "cameraMeta": "Water reflection"
   },
@@ -140,6 +151,7 @@ window.ZY_PHOTOS = [
     "thumb": "assets/photos/thumbs/zy-blue-ridges-wide.jpg",
     "alt": "蓝色山脉层层延伸的长幅照片",
     "orientation": "panorama",
+    "color": "#4764bf",
     "featured": true,
     "cameraMeta": "Distant ridges"
   },
@@ -152,6 +164,7 @@ window.ZY_PHOTOS = [
     "thumb": "assets/photos/thumbs/zy-rose-blue-ridges.jpg",
     "alt": "粉蓝天空下层叠山线的宽幅照片",
     "orientation": "landscape",
+    "color": "#4f608a",
     "featured": true,
     "cameraMeta": "Distant ridges"
   },
@@ -164,6 +177,7 @@ window.ZY_PHOTOS = [
     "thumb": "assets/photos/thumbs/zy-deep-ridges.jpg",
     "alt": "深蓝色山脉在暮色中层层退远",
     "orientation": "landscape",
+    "color": "#314b8f",
     "featured": false,
     "cameraMeta": "Distant ridges"
   }

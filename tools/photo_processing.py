@@ -40,6 +40,36 @@ def image_orientation(width: int, height: int) -> str:
     return "square"
 
 
+def extract_accent_color(path: Path, fallback: str = "#9a9287") -> str:
+    try:
+        with Image.open(path) as original:
+            original.draft("RGB", (320, 320))
+            image = ImageOps.exif_transpose(original).convert("RGB")
+            image.thumbnail((96, 96), Image.Resampling.LANCZOS)
+            quantized = image.quantize(colors=8, method=Image.Quantize.MEDIANCUT).convert("RGB")
+            colors = quantized.getcolors(96 * 96) or []
+    except Exception:
+        return fallback
+
+    best_score = -1.0
+    best_color = None
+    for count, (red, green, blue) in colors:
+        high = max(red, green, blue) / 255
+        low = min(red, green, blue) / 255
+        saturation = high - low
+        lightness = (high + low) / 2
+        if lightness < 0.12 or lightness > 0.92:
+            continue
+        score = count * (0.52 + saturation) * (1 - abs(lightness - 0.52))
+        if score > best_score:
+            best_score = score
+            best_color = (red, green, blue)
+
+    if best_color is None:
+        return fallback
+    return "#{:02x}{:02x}{:02x}".format(*best_color)
+
+
 def read_image_size(path: Path) -> tuple[int, int]:
     try:
         with Image.open(path) as image:

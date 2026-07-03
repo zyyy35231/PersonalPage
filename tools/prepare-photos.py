@@ -10,7 +10,7 @@ import re
 from datetime import datetime
 from pathlib import Path
 
-from photo_processing import IMAGE_EXTENSIONS, image_orientation, write_web_jpeg
+from photo_processing import IMAGE_EXTENSIONS, extract_accent_color, image_orientation, write_web_jpeg
 
 
 def slugify(value: str) -> str:
@@ -83,6 +83,7 @@ def draft_entry(path: Path, slug: str, width: int, height: int, out_dir: Path, c
         "thumb": thumb_path.as_posix(),
         "alt": f"{path.stem} 的摄影作品",
         "orientation": image_orientation(width, height),
+        "color": extract_accent_color(path),
         "featured": False,
         "cameraMeta": ""
     }
