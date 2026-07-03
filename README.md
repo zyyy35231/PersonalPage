@@ -20,6 +20,12 @@ To prepare web images and draft photo data:
 python3 tools/prepare-photos.py your-photo.jpg
 ```
 
+To import photos marked as selected in the local curation workbench:
+
+```bash
+python3 tools/prepare-photos.py --from-curation .curation/selection-draft.json
+```
+
 The page reads portfolio entries from `assets/photo-data.js` and web-ready images from `assets/photos/`.
 
 ## Local Curation Workbench

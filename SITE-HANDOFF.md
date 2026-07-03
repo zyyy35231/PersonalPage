@@ -47,7 +47,7 @@ assets/photo-data.js
 
 1. 先用 `tools/curate-photos.py` 从 Lightroom 文件夹筛选照片
 2. 确认 `.curation/selection-draft.json` 里的入选项
-3. 运行 `tools/prepare-photos.py` 生成网页图和缩略图
+3. 运行 `tools/prepare-photos.py --from-curation .curation/selection-draft.json` 生成网页图、缩略图和主站数据
 4. 检查 `assets/photo-data.js` 里的草稿条目
 5. 补齐标题、系列、年份和 `alt`
 6. 打开 `index.html` 检查页面
@@ -56,12 +56,12 @@ assets/photo-data.js
 
 ```bash
 python3 tools/curate-photos.py --source /Users/zy/Desktop/Lightroom
-python3 tools/prepare-photos.py your-photo.jpg
+python3 tools/prepare-photos.py --from-curation .curation/selection-draft.json
 ```
 
 选片工作台里，单击照片只会移动选框并在右侧预览；在当前照片上按空格会在“入选/未筛”之间切换。方向键可在网格里移动选框，数字键 `1`/`2`/`3`/`0` 分别设为入选/备选/淘汰/未筛。右上角“刷新”会重新加载本地工作台页面。
 
-如果不传文件名，工具会处理 `Photos/` 里的所有图片。
+导入命令默认只导入草稿里状态为 `selected` 的照片；不会把本地原图路径写入公开的 `assets/photo-data.js`。如果不传 `--from-curation` 和文件名，工具会处理 `Photos/` 里的所有图片。
 
 ## 当前首轮作品
 

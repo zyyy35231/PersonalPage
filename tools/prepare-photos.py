@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import re
 from datetime import datetime
@@ -19,6 +20,11 @@ def slugify(value: str) -> str:
     value = value.lower()
     value = re.sub(r"[^a-z0-9]+", "-", value)
     return value.strip("-") or "photo"
+
+
+def curation_slug(path: Path) -> str:
+    digest = hashlib.sha1(str(path).encode("utf-8")).hexdigest()[:8]
+    return f"{slugify(path.stem)}-{digest}"
 
 
 def read_existing_data(path: Path) -> list[dict]:
@@ -73,15 +79,32 @@ def source_files(source: Path, selected: list[str]) -> list[Path]:
     return files
 
 
-def draft_entry(path: Path, slug: str, width: int, height: int, out_dir: Path) -> dict:
+def curation_entries(path: Path, status: str) -> list[dict]:
+    if not path.exists():
+        raise FileNotFoundError(f"Curation draft not found: {path}")
+    payload = json.loads(path.read_text(encoding="utf-8"))
+    photos = payload.get("photos", []) if isinstance(payload, dict) else []
+    entries = []
+    for item in photos:
+        if item.get("status") != status:
+            continue
+        source_path = Path(item.get("sourcePath", ""))
+        if not source_path.exists() or source_path.suffix.lower() not in IMAGE_EXTENSIONS:
+            continue
+        entries.append(item)
+    return entries
+
+
+def draft_entry(path: Path, slug: str, width: int, height: int, out_dir: Path, curation: dict | None = None) -> dict:
     year_match = re.search(r"(20\d{2})", path.name)
     year = year_match.group(1) if year_match else str(datetime.fromtimestamp(path.stat().st_mtime).year)
     image_path = out_dir / f"{slug}.jpg"
     thumb_path = out_dir / "thumbs" / f"{slug}.jpg"
+    series = (curation or {}).get("series") or "未分类"
     return {
         "id": slug,
         "title": path.stem,
-        "series": "未分类",
+        "series": series,
         "year": year,
         "image": image_path.as_posix(),
         "thumb": thumb_path.as_posix(),
@@ -103,6 +126,8 @@ def main() -> None:
     parser.add_argument("--quality", type=int, default=88, help="JPEG quality for full images.")
     parser.add_argument("--thumb-quality", type=int, default=82, help="JPEG quality for thumbnails.")
     parser.add_argument("--force", action="store_true", help="Regenerate existing web images.")
+    parser.add_argument("--from-curation", help="Read selected source photos from a curation draft JSON file.")
+    parser.add_argument("--curation-status", default="selected", help="Curation status to import. Defaults to selected.")
     args = parser.parse_args()
 
     source = Path(args.source)
@@ -110,9 +135,16 @@ def main() -> None:
     data_path = Path(args.data)
     entries = read_existing_data(data_path)
     known_ids = {entry["id"] for entry in entries}
+    if args.from_curation:
+        curation_items = curation_entries(Path(args.from_curation), args.curation_status)
+        if not curation_items:
+            print(f"no photos with status {args.curation_status!r} in {args.from_curation}")
+            return
+        work_items = [(Path(item["sourcePath"]), item, curation_slug(Path(item["sourcePath"]))) for item in curation_items]
+    else:
+        work_items = [(path, None, slugify(path.stem)) for path in source_files(source, args.files)]
 
-    for path in source_files(source, args.files):
-        slug = slugify(path.stem)
+    for path, curation, slug in work_items:
         image_out = out_dir / f"{slug}.jpg"
         thumb_out = out_dir / "thumbs" / f"{slug}.jpg"
 
@@ -125,7 +157,7 @@ def main() -> None:
             width, height = image.size
 
         if slug not in known_ids:
-            entries.append(draft_entry(path, slug, width, height, out_dir))
+            entries.append(draft_entry(path, slug, width, height, out_dir, curation))
             known_ids.add(slug)
 
         print(f"prepared {path.name} -> {image_out}")

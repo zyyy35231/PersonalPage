@@ -22,6 +22,7 @@ DEFAULT_SOURCE = Path("/Users/zy/Desktop/Lightroom")
 CURATION_DIR = Path(".curation")
 DRAFT_PATH = CURATION_DIR / "selection-draft.json"
 THUMB_DIR = CURATION_DIR / "thumbs"
+PREVIEW_DIR = CURATION_DIR / "previews"
 IMAGE_EXTENSIONS = {".jpg", ".jpeg", ".png", ".webp", ".tif", ".tiff"}
 SERIES = ["天象", "边缘光", "山线", "水边", "微观", "未分类"]
 STATUSES = ["unreviewed", "selected", "maybe", "rejected"]
@@ -367,6 +368,12 @@ HTML = r"""<!doctype html>
       object-fit: contain;
     }
 
+    .preview.is-loading::after {
+      content: "正在生成预览...";
+      color: var(--muted);
+      font-size: 13px;
+    }
+
     .empty {
       color: var(--muted);
       font-size: 14px;
@@ -450,8 +457,7 @@ HTML = r"""<!doctype html>
     }
 
     @media (max-width: 1120px) {
-      .app,
-      .workspace {
+      .app {
         grid-template-columns: 1fr;
       }
 
@@ -463,6 +469,12 @@ HTML = r"""<!doctype html>
 
       .folder-list {
         max-height: 280px;
+      }
+    }
+
+    @media (max-width: 860px) {
+      .workspace {
+        grid-template-columns: 1fr;
       }
 
       .detail {
@@ -686,7 +698,8 @@ HTML = r"""<!doctype html>
       const photo = activePhoto();
       statusButtons.forEach((button) => button.classList.remove("is-active"));
       if (!photo) {
-        preview.innerHTML = '<div class="empty">No photo selected</div>';
+        preview.classList.remove("is-loading");
+        preview.innerHTML = '<div class="empty">未选择照片</div>';
         photoName.textContent = "未选择";
         photoMeta.textContent = "";
         noteInput.value = "";
@@ -694,7 +707,8 @@ HTML = r"""<!doctype html>
         return;
       }
 
-      preview.innerHTML = `<img src="/api/image/${photo.id}" alt="${photo.fileName}">`;
+      preview.classList.add("is-loading");
+      preview.innerHTML = `<img src="/api/image/${photo.id}" alt="${photo.fileName}" onload="this.parentElement.classList.remove('is-loading')" onerror="this.parentElement.classList.remove('is-loading'); this.replaceWith(Object.assign(document.createElement('div'), { className: 'empty', textContent: '预览生成失败' }))">`;
       photoName.textContent = photo.fileName;
       photoMeta.textContent = `${photo.width || "?"} x ${photo.height || "?"} · ${photo.orientation} · ${photo.relativePath}`;
       noteInput.value = photo.note || "";
@@ -884,6 +898,7 @@ class CurationStore:
         self.curation_dir = curation_dir
         self.draft_path = curation_dir / "selection-draft.json"
         self.thumb_dir = curation_dir / "thumbs"
+        self.preview_dir = curation_dir / "previews"
         self.entries: dict[str, dict] = {}
         self.photos_by_id: dict[str, dict] = {}
         self.folders: dict[str, list[dict]] = {}
@@ -1036,6 +1051,9 @@ class CurationStore:
     def thumbnail_path(self, photo_id: str) -> Path:
         return self.thumb_dir / f"{photo_id}.jpg"
 
+    def preview_path(self, photo_id: str) -> Path:
+        return self.preview_dir / f"{photo_id}.jpg"
+
     def ensure_thumbnail(self, photo_id: str) -> Path:
         if photo_id not in self.photos_by_id:
             raise KeyError(photo_id)
@@ -1051,6 +1069,23 @@ class CurationStore:
             photo["orientation"] = image_orientation(photo["width"], photo["height"])
             image.thumbnail((720, 720), Image.Resampling.LANCZOS)
             image.save(target, "JPEG", quality=82, optimize=True, progressive=True)
+        return target
+
+    def ensure_preview(self, photo_id: str) -> Path:
+        if photo_id not in self.photos_by_id:
+            raise KeyError(photo_id)
+        target = self.preview_path(photo_id)
+        if target.exists():
+            return target
+        target.parent.mkdir(parents=True, exist_ok=True)
+        photo = self.photos_by_id[photo_id]
+        source = Path(photo["sourcePath"])
+        with Image.open(source) as image:
+            image = ImageOps.exif_transpose(image).convert("RGB")
+            photo["width"], photo["height"] = image.size
+            photo["orientation"] = image_orientation(photo["width"], photo["height"])
+            image.thumbnail((2200, 2200), Image.Resampling.LANCZOS)
+            image.save(target, "JPEG", quality=88, optimize=True, progressive=True)
         return target
 
 
@@ -1105,11 +1140,7 @@ class CurationHandler(BaseHTTPRequestHandler):
                 self.send_file(self.store.ensure_thumbnail(photo_id), "image/jpeg")
             elif path.startswith("/api/image/"):
                 photo_id = path.rsplit("/", 1)[-1]
-                photo = self.store.photos_by_id.get(photo_id)
-                if not photo:
-                    self.send_error(HTTPStatus.NOT_FOUND)
-                    return
-                self.send_file(Path(photo["sourcePath"]))
+                self.send_file(self.store.ensure_preview(photo_id), "image/jpeg")
             else:
                 self.send_error(HTTPStatus.NOT_FOUND)
         except Exception as error:
@@ -1149,14 +1180,14 @@ def run(source: Path, curation_dir: Path, host: str, port: int) -> None:
     CurationHandler.store = store
     server = ThreadingHTTPServer((host, port), CurationHandler)
     url = f"http://{host}:{port}/"
-    print(f"Zy curation workbench")
-    print(f"Source: {store.source}")
-    print(f"Draft:  {store.draft_path}")
-    print(f"Open:   {url}")
+    print(f"Zy curation workbench", flush=True)
+    print(f"Source: {store.source}", flush=True)
+    print(f"Draft:  {store.draft_path}", flush=True)
+    print(f"Open:   {url}", flush=True)
     try:
         server.serve_forever()
     except KeyboardInterrupt:
-        print("\nStopped")
+        print("\nStopped", flush=True)
     finally:
         server.server_close()
 
