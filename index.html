@@ -706,15 +706,30 @@
     }
 
     function renderColorStrip() {
-      const dots = orderedSeries().filter((name) => name !== "全部");
-      colorStrip.innerHTML = dots.map((name) => `
-        <span class="strip-dot" style="--tone: ${seriesColors[name] || seriesColors["未分类"]}" title="${name}"></span>
+      const dots = [];
+      photos.forEach((photo) => {
+        const color = photoColor(photo);
+        if (!dots.includes(color)) {
+          dots.push(color);
+        }
+      });
+      colorStrip.innerHTML = dots.slice(0, 24).map((color) => `
+        <span class="strip-dot" style="--tone: ${color}"></span>
       `).join("");
     }
 
     function renderHero() {
-      const featured = photos.filter((photo) => photo.featured).slice(0, 4);
-      const items = featured.length >= 4 ? featured : photos.slice(0, 4);
+      const latest = photos.slice(-4);
+      const featured = photos.filter((photo) => photo.featured);
+      const pool = [...latest, ...featured, ...photos];
+      const seen = new Set();
+      const items = pool.filter((photo) => {
+        if (seen.has(photo.id)) {
+          return false;
+        }
+        seen.add(photo.id);
+        return true;
+      }).slice(0, 4);
       heroGrid.innerHTML = items.map((photo) => `
         <a class="hero-tile" href="#works" style="--tone: ${photoColor(photo)}" aria-label="进入作品">
           <img src="${photo.image}" alt="${photo.alt}" />

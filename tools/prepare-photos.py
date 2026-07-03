@@ -85,7 +85,7 @@ def draft_entry(path: Path, slug: str, width: int, height: int, out_dir: Path, c
         "orientation": image_orientation(width, height),
         "color": extract_accent_color(path),
         "featured": False,
-        "cameraMeta": ""
+        "cameraMeta": f"{width} x {height}" if width and height else ""
     }
 
 
