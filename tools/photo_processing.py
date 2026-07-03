@@ -16,9 +16,9 @@ def image_orientation(width: int, height: int) -> str:
     ratio = width / height
     if ratio > 2:
         return "panorama"
-    if ratio > 1.08:
+    if ratio > 1.05:
         return "landscape"
-    if ratio < 0.92:
+    if ratio < 0.95:
         return "portrait"
     return "square"
 

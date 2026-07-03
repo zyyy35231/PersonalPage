@@ -674,6 +674,12 @@ HTML = r"""<!doctype html>
       return visible[activeIndex] || null;
     }
 
+    function formatPhotoMeta(photo) {
+      const size = photo.width && photo.height ? `${photo.width} x ${photo.height}` : "读取尺寸中...";
+      const orientation = photo.orientation && photo.orientation !== "unknown" ? photo.orientation : "方向待识别";
+      return `${size} · ${orientation} · ${photo.relativePath}`;
+    }
+
     function renderPhotos() {
       const visible = visiblePhotos();
       photoGrid.innerHTML = visible.map((photo, index) => `
@@ -724,15 +730,31 @@ HTML = r"""<!doctype html>
       preview.classList.add("is-loading");
       preview.innerHTML = `<img src="/api/image/${photo.id}" alt="${photo.fileName}" onload="this.parentElement.classList.remove('is-loading')" onerror="this.parentElement.classList.remove('is-loading'); this.replaceWith(Object.assign(document.createElement('div'), { className: 'empty', textContent: '预览生成失败' }))">`;
       photoName.textContent = photo.fileName;
-      photoMeta.textContent = `${photo.width || "?"} x ${photo.height || "?"} · ${photo.orientation} · ${photo.relativePath}`;
+      photoMeta.textContent = formatPhotoMeta(photo);
       noteInput.value = photo.note || "";
       seriesSelect.value = photo.series || "未分类";
       const activeButton = statusButtons.find((button) => button.dataset.status === photo.status);
       if (activeButton) activeButton.classList.add("is-active");
+      loadPhotoMeta(photo);
 
       document.querySelectorAll(".photo-button").forEach((button) => {
         button.classList.toggle("is-active", Number(button.dataset.index) === activeIndex);
       });
+    }
+
+    async function loadPhotoMeta(photo) {
+      if (photo.width && photo.height && photo.orientation !== "unknown") return;
+      try {
+        const meta = await api(`/api/meta/${photo.id}`);
+        Object.assign(photo, meta.photo);
+        if (activePhoto()?.id === photo.id) {
+          photoMeta.textContent = formatPhotoMeta(photo);
+        }
+      } catch (error) {
+        if (activePhoto()?.id === photo.id) {
+          photoMeta.textContent = `${photo.relativePath} · ${error.message}`;
+        }
+      }
     }
 
     function moveSelection(step) {
@@ -1029,6 +1051,15 @@ class CurationStore:
             "photos": photos,
         }
 
+    def ensure_dimensions(self, photo_id: str) -> dict:
+        if photo_id not in self.photos_by_id:
+            raise KeyError(photo_id)
+        photo = self.photos_by_id[photo_id]
+        if not photo["width"] or not photo["height"] or photo["orientation"] == "unknown":
+            photo["width"], photo["height"] = self.read_size(Path(photo["sourcePath"]))
+            photo["orientation"] = image_orientation(photo["width"], photo["height"])
+        return photo
+
     def update_photo(self, photo_id: str, patch: dict) -> dict:
         if photo_id not in self.photos_by_id:
             raise KeyError(photo_id)
@@ -1073,6 +1104,7 @@ class CurationStore:
             raise KeyError(photo_id)
         target = self.thumbnail_path(photo_id)
         if target.exists():
+            self.ensure_dimensions(photo_id)
             return target
         target.parent.mkdir(parents=True, exist_ok=True)
         photo = self.photos_by_id[photo_id]
@@ -1086,6 +1118,7 @@ class CurationStore:
             raise KeyError(photo_id)
         target = self.preview_path(photo_id)
         if target.exists():
+            self.ensure_dimensions(photo_id)
             return target
         target.parent.mkdir(parents=True, exist_ok=True)
         photo = self.photos_by_id[photo_id]
@@ -1141,6 +1174,9 @@ class CurationHandler(BaseHTTPRequestHandler):
             elif path == "/api/photos":
                 key = query.get("folder", ["."])[0]
                 self.send_json(self.store.photos_for_folder(key))
+            elif path.startswith("/api/meta/"):
+                photo_id = path.rsplit("/", 1)[-1]
+                self.send_json({"photo": self.store.ensure_dimensions(photo_id)})
             elif path.startswith("/api/thumb/"):
                 photo_id = Path(path).stem
                 self.send_file(self.store.ensure_thumbnail(photo_id), "image/jpeg")
