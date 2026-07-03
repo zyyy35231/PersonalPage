@@ -10,10 +10,7 @@ import re
 from datetime import datetime
 from pathlib import Path
 
-from PIL import Image, ImageOps
-
-
-IMAGE_EXTENSIONS = {".jpg", ".jpeg", ".png", ".tif", ".tiff", ".webp"}
+from photo_processing import IMAGE_EXTENSIONS, image_orientation, write_web_jpeg
 
 
 def slugify(value: str) -> str:
@@ -41,30 +38,6 @@ def write_data(path: Path, entries: list[dict]) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     body = json.dumps(entries, ensure_ascii=False, indent=2)
     path.write_text(f"window.ZY_PHOTOS = {body};\n", encoding="utf-8")
-
-
-def image_orientation(width: int, height: int) -> str:
-    ratio = width / height
-    if ratio > 2:
-        return "panorama"
-    if ratio > 1.08:
-        return "landscape"
-    if ratio < 0.92:
-        return "portrait"
-    return "square"
-
-
-def resize_to_limit(image: Image.Image, max_edge: int) -> Image.Image:
-    output = image.copy()
-    output.thumbnail((max_edge, max_edge), Image.Resampling.LANCZOS)
-    return output
-
-
-def save_jpeg(image: Image.Image, path: Path, quality: int, force: bool) -> None:
-    if path.exists() and not force:
-        return
-    path.parent.mkdir(parents=True, exist_ok=True)
-    image.save(path, "JPEG", quality=quality, optimize=True, progressive=True)
 
 
 def source_files(source: Path, selected: list[str]) -> list[Path]:
@@ -148,13 +121,8 @@ def main() -> None:
         image_out = out_dir / f"{slug}.jpg"
         thumb_out = out_dir / "thumbs" / f"{slug}.jpg"
 
-        with Image.open(path) as original:
-            image = ImageOps.exif_transpose(original).convert("RGB")
-            full = resize_to_limit(image, args.max_edge)
-            thumb = resize_to_limit(image, args.thumb_edge)
-            save_jpeg(full, image_out, args.quality, args.force)
-            save_jpeg(thumb, thumb_out, args.thumb_quality, args.force)
-            width, height = image.size
+        width, height = write_web_jpeg(path, image_out, args.max_edge, args.quality, args.force)
+        write_web_jpeg(path, thumb_out, args.thumb_edge, args.thumb_quality, args.force)
 
         if slug not in known_ids:
             entries.append(draft_entry(path, slug, width, height, out_dir, curation))

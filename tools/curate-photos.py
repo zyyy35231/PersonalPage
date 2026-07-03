@@ -15,7 +15,7 @@ from http import HTTPStatus
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 
-from PIL import Image, ImageOps
+from photo_processing import IMAGE_EXTENSIONS, image_orientation, read_image_size, write_web_jpeg
 
 
 DEFAULT_SOURCE = Path("/Users/zy/Desktop/Lightroom")
@@ -23,7 +23,6 @@ CURATION_DIR = Path(".curation")
 DRAFT_PATH = CURATION_DIR / "selection-draft.json"
 THUMB_DIR = CURATION_DIR / "thumbs"
 PREVIEW_DIR = CURATION_DIR / "previews"
-IMAGE_EXTENSIONS = {".jpg", ".jpeg", ".png", ".webp", ".tif", ".tiff"}
 SERIES = ["天象", "边缘光", "山线", "水边", "微观", "未分类"]
 STATUSES = ["unreviewed", "selected", "maybe", "rejected"]
 
@@ -256,15 +255,23 @@ HTML = r"""<!doctype html>
       outline: none;
     }
 
+    .toolbar .save-button {
+      color: white;
+      border-color: transparent;
+      background: var(--accent);
+    }
+
     .workspace {
       min-height: 0;
+      height: calc(100vh - 79px);
       display: grid;
       grid-template-columns: minmax(0, 1fr) minmax(320px, 420px);
+      align-items: stretch;
     }
 
     .grid-wrap {
       min-width: 0;
-      min-height: 0;
+      height: 100%;
       overflow: auto;
       padding: 18px;
     }
@@ -344,27 +351,30 @@ HTML = r"""<!doctype html>
 
     .detail {
       min-width: 0;
-      min-height: 0;
+      height: 100%;
       border-left: 1px solid var(--line);
       background: var(--panel);
-      display: grid;
-      grid-template-rows: minmax(260px, 1fr) auto;
+      display: flex;
+      flex-direction: column;
     }
 
     .preview {
-      min-height: 0;
+      flex: 1 1 auto;
+      min-height: 320px;
       display: grid;
       place-items: center;
       padding: 18px;
+      overflow: hidden;
       background:
         linear-gradient(135deg, rgba(255, 255, 255, 0.52), rgba(230, 225, 216, 0.72)),
         #e8e3da;
     }
 
     .preview img {
-      width: 100%;
-      height: 100%;
-      max-height: calc(100vh - 250px);
+      width: auto;
+      height: auto;
+      max-width: 100%;
+      max-height: 100%;
       object-fit: contain;
     }
 
@@ -380,6 +390,7 @@ HTML = r"""<!doctype html>
     }
 
     .editor {
+      flex: 0 0 auto;
       border-top: 1px solid var(--line);
       padding: 16px;
       display: grid;
@@ -474,6 +485,7 @@ HTML = r"""<!doctype html>
 
     @media (max-width: 860px) {
       .workspace {
+        height: auto;
         grid-template-columns: 1fr;
       }
 
@@ -540,6 +552,7 @@ HTML = r"""<!doctype html>
             <option value="maybe">备选</option>
             <option value="rejected">淘汰</option>
           </select>
+          <button class="save-button" id="saveButton" type="button">保存</button>
           <button id="refreshButton" type="button">刷新</button>
         </div>
       </header>
@@ -602,6 +615,7 @@ HTML = r"""<!doctype html>
     const folderTitle = document.getElementById("folderTitle");
     const folderMeta = document.getElementById("folderMeta");
     const statusFilter = document.getElementById("statusFilter");
+    const saveButton = document.getElementById("saveButton");
     const refreshButton = document.getElementById("refreshButton");
     const photoGrid = document.getElementById("photoGrid");
     const preview = document.getElementById("preview");
@@ -758,13 +772,37 @@ HTML = r"""<!doctype html>
       }
     }
 
+    async function persistPhoto(photo, statusChanged = false) {
+      if (!photo) return;
+      try {
+        const updated = await api(`/api/photo/${photo.id}`, {
+          method: "POST",
+          body: JSON.stringify({
+            status: photo.status,
+            series: photo.series,
+            note: photo.note
+          })
+        });
+        Object.assign(photo, updated.photo);
+        saveState.textContent = `已保存 ${new Date().toLocaleTimeString()}`;
+        await loadSummary();
+        const current = appState.folders.find((folder) => folder.key === activeFolder);
+        if (current) folderMeta.textContent = formatCount(current.stats);
+        if (statusChanged) {
+          renderPhotos();
+        }
+      } catch (error) {
+        saveState.textContent = error.message;
+      }
+    }
+
     function queueSave(patch) {
       const photo = activePhoto();
       if (!photo) return;
       const statusChanged = Object.prototype.hasOwnProperty.call(patch, "status");
       const seriesChanged = Object.prototype.hasOwnProperty.call(patch, "series");
       Object.assign(photo, patch);
-      saveState.textContent = "Saving...";
+      saveState.textContent = "等待保存...";
       if (statusChanged) {
         renderPhotos();
       } else if (seriesChanged) {
@@ -772,27 +810,20 @@ HTML = r"""<!doctype html>
       }
       clearTimeout(saveTimer);
       saveTimer = setTimeout(async () => {
-        try {
-          const updated = await api(`/api/photo/${photo.id}`, {
-            method: "POST",
-            body: JSON.stringify({
-              status: photo.status,
-              series: photo.series,
-              note: photo.note
-            })
-          });
-          Object.assign(photo, updated.photo);
-          saveState.textContent = `Saved ${new Date().toLocaleTimeString()}`;
-          await loadSummary();
-          const current = appState.folders.find((folder) => folder.key === activeFolder);
-          if (current) folderMeta.textContent = formatCount(current.stats);
-          if (statusChanged) {
-            renderPhotos();
-          }
-        } catch (error) {
-          saveState.textContent = error.message;
-        }
+        saveState.textContent = "保存中...";
+        await persistPhoto(photo, statusChanged);
       }, 220);
+    }
+
+    async function saveNow() {
+      const photo = activePhoto();
+      if (!photo) {
+        saveState.textContent = "没有可保存的照片";
+        return;
+      }
+      clearTimeout(saveTimer);
+      saveState.textContent = "保存中...";
+      await persistPhoto(photo);
     }
 
     function toggleSelected() {
@@ -820,6 +851,7 @@ HTML = r"""<!doctype html>
     seriesSelect.addEventListener("change", () => queueSave({ series: seriesSelect.value }));
     noteInput.addEventListener("input", () => queueSave({ note: noteInput.value }));
     statusFilter.addEventListener("change", renderPhotos);
+    saveButton.addEventListener("click", saveNow);
     refreshButton.addEventListener("click", () => window.location.reload());
 
     document.addEventListener("keydown", (event) => {
@@ -862,19 +894,6 @@ HTML = r"""<!doctype html>
 
 def now_iso() -> str:
     return datetime.now(timezone.utc).isoformat(timespec="seconds")
-
-
-def image_orientation(width: int, height: int) -> str:
-    if not width or not height:
-        return "unknown"
-    ratio = width / height
-    if ratio > 2:
-        return "panorama"
-    if ratio > 1.08:
-        return "landscape"
-    if ratio < 0.92:
-        return "portrait"
-    return "square"
 
 
 def is_ignored(path: Path, source: Path) -> bool:
@@ -971,12 +990,7 @@ class CurationStore:
 
     @staticmethod
     def read_size(path: Path) -> tuple[int, int]:
-        try:
-            with Image.open(path) as image:
-                image = ImageOps.exif_transpose(image)
-                return image.size
-        except Exception:
-            return 0, 0
+        return read_image_size(path)
 
     def folder_label(self, key: str) -> str:
         return "根目录" if key == "." else key
@@ -1063,12 +1077,8 @@ class CurationStore:
         target.parent.mkdir(parents=True, exist_ok=True)
         photo = self.photos_by_id[photo_id]
         source = Path(photo["sourcePath"])
-        with Image.open(source) as image:
-            image = ImageOps.exif_transpose(image).convert("RGB")
-            photo["width"], photo["height"] = image.size
-            photo["orientation"] = image_orientation(photo["width"], photo["height"])
-            image.thumbnail((720, 720), Image.Resampling.LANCZOS)
-            image.save(target, "JPEG", quality=82, optimize=True, progressive=True)
+        photo["width"], photo["height"] = write_web_jpeg(source, target, 720, 82)
+        photo["orientation"] = image_orientation(photo["width"], photo["height"])
         return target
 
     def ensure_preview(self, photo_id: str) -> Path:
@@ -1080,12 +1090,8 @@ class CurationStore:
         target.parent.mkdir(parents=True, exist_ok=True)
         photo = self.photos_by_id[photo_id]
         source = Path(photo["sourcePath"])
-        with Image.open(source) as image:
-            image = ImageOps.exif_transpose(image).convert("RGB")
-            photo["width"], photo["height"] = image.size
-            photo["orientation"] = image_orientation(photo["width"], photo["height"])
-            image.thumbnail((2200, 2200), Image.Resampling.LANCZOS)
-            image.save(target, "JPEG", quality=88, optimize=True, progressive=True)
+        photo["width"], photo["height"] = write_web_jpeg(source, target, 2200, 88)
+        photo["orientation"] = image_orientation(photo["width"], photo["height"])
         return target
 
 

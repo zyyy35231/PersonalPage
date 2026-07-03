@@ -18,6 +18,7 @@ Photos/                  <- 原图和候选照片
 tools/
   prepare-photos.py      <- 新增照片导入工具
   curate-photos.py       <- 本地选片工作台
+  photo_processing.py    <- 预览和发布共用的图片压缩/方向判断
 ```
 
 ## 页面数据
@@ -59,9 +60,11 @@ python3 tools/curate-photos.py --source /Users/zy/Desktop/Lightroom
 python3 tools/prepare-photos.py --from-curation .curation/selection-draft.json
 ```
 
-选片工作台里，单击照片只会移动选框并在右侧预览；在当前照片上按空格会在“入选/未筛”之间切换。方向键可在网格里移动选框，数字键 `1`/`2`/`3`/`0` 分别设为入选/备选/淘汰/未筛。右上角“刷新”会重新加载本地工作台页面。
+选片工作台里，单击照片只会移动选框并在右侧预览；在当前照片上按空格会在“入选/未筛”之间切换。方向键可在网格里移动选框，数字键 `1`/`2`/`3`/`0` 分别设为入选/备选/淘汰/未筛。修改会自动保存，“保存”按钮会立刻把当前照片的状态、系列和备注写入草稿；右上角“刷新”会重新加载本地工作台页面。
 
 导入命令默认只导入草稿里状态为 `selected` 的照片；不会把本地原图路径写入公开的 `assets/photo-data.js`。如果不传 `--from-curation` 和文件名，工具会处理 `Photos/` 里的所有图片。
+
+预览图和发布图共用 `tools/photo_processing.py` 里的压缩函数：选片台生成 `.curation/previews/` 下的本地预览 JPEG，发布导入生成 `assets/photos/` 和 `assets/photos/thumbs/` 下的网页 JPEG。
 
 ## 当前首轮作品
 
