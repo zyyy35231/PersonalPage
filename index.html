@@ -10,8 +10,7 @@
       --ink: #181614;
       --muted: #777168;
       --line: rgba(24, 22, 20, 0.14);
-      --surface: rgba(244, 241, 234, 0.86);
-      --dark: #08090a;
+      --surface: rgba(244, 241, 234, 0.88);
       --page-pad: clamp(16px, 3.8vw, 52px);
       --font-display: "Iowan Old Style", "Charter", Georgia, serif;
       --font-body: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
@@ -86,92 +85,120 @@
       text-transform: uppercase;
     }
 
-    .intro {
-      min-height: calc(100svh - 59px);
-      display: grid;
-      grid-template-rows: auto 1fr auto;
-      gap: clamp(18px, 3vw, 32px);
-      padding: clamp(18px, 4vw, 54px) var(--page-pad) clamp(24px, 4vw, 52px);
-    }
-
-    .intro-line {
-      display: grid;
-      grid-template-columns: 1fr auto;
-      align-items: center;
-      gap: 16px;
-      color: var(--muted);
-      font-size: 12px;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
+    .works {
+      padding: clamp(22px, 4vw, 54px) var(--page-pad) clamp(56px, 8vw, 118px);
     }
 
     .color-strip {
       display: flex;
-      align-items: center;
       gap: 7px;
-      min-width: 0;
+      align-items: center;
+      min-height: 16px;
+      margin-bottom: clamp(34px, 5vw, 72px);
       overflow: hidden;
     }
 
-    .strip-dot,
-    .palette-dot {
+    .strip-dot {
       width: 9px;
       height: 9px;
       border-radius: 50%;
       background: var(--tone);
       box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.12);
+      flex: 0 0 auto;
     }
 
-    .hero-grid {
+    .wall {
       display: grid;
-      grid-template-columns: 1.18fr 0.82fr 0.62fr;
-      grid-template-rows: minmax(220px, 1fr) minmax(160px, 0.68fr);
-      gap: clamp(8px, 1.4vw, 18px);
-      min-height: 0;
+      gap: clamp(46px, 8vw, 112px);
     }
 
-    .hero-tile {
+    .wall-group {
+      display: grid;
+      grid-template-columns: clamp(24px, 4vw, 58px) minmax(0, 1fr);
+      gap: clamp(18px, 3.2vw, 48px);
+      align-items: start;
+      min-height: clamp(360px, 52vw, 720px);
+    }
+
+    .wall-rail {
+      position: sticky;
+      top: 82px;
+      min-height: clamp(240px, 42vw, 520px);
+      background: var(--tone);
+    }
+
+    .wall-grid {
+      display: grid;
+      grid-template-columns: repeat(10, minmax(0, 1fr));
+      grid-auto-rows: 18px;
+      gap: clamp(9px, 1.2vw, 16px);
+    }
+
+    .photo-button {
       position: relative;
+      grid-column: span 3;
+      grid-row: span 13;
       min-height: 0;
+      border: 0;
+      padding: 0;
       overflow: hidden;
-      background: #d7d1c7;
+      background: #d6d0c6;
+      cursor: pointer;
     }
 
-    .hero-tile:first-child { grid-row: span 2; }
-    .hero-tile:nth-child(2) { grid-column: span 2; }
-
-    .hero-tile img,
-    .work-image,
-    .color-card img,
-    .lightbox-image {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
+    .photo-button[data-shape="large"] {
+      grid-column: span 5;
+      grid-row: span 17;
     }
 
-    .hero-tile img {
-      position: absolute;
-      inset: 0;
+    .photo-button[data-shape="small"] {
+      grid-column: span 2;
+      grid-row: span 10;
     }
 
-    .hero-tile::after,
-    .work-card::after {
+    .photo-button[data-shape="wide"] {
+      grid-column: span 4;
+      grid-row: span 12;
+    }
+
+    .photo-button[data-shape="tall"] {
+      grid-column: span 3;
+      grid-row: span 18;
+    }
+
+    .photo-button[data-shape="panorama"] {
+      grid-column: span 6;
+      grid-row: span 10;
+    }
+
+    .photo-button::after {
       content: "";
       position: absolute;
-      inset: auto 12px 12px auto;
+      left: 10px;
+      bottom: 10px;
       width: 11px;
       height: 11px;
       border-radius: 50%;
       background: var(--tone);
-      box-shadow: 0 0 0 2px rgba(244, 241, 234, 0.86);
+      box-shadow: 0 0 0 2px rgba(244, 241, 234, 0.86), inset 0 0 0 1px rgba(0, 0, 0, 0.14);
     }
 
-    .intro-meta {
-      display: flex;
-      justify-content: space-between;
-      gap: 18px;
-      color: var(--muted);
-      font-size: 13px;
+    .photo-button:hover img,
+    .photo-button:focus-visible img {
+      transform: scale(1.025);
+      filter: saturate(0.95);
+    }
+
+    .photo-button:focus-visible {
+      outline: 2px solid var(--tone);
+      outline-offset: 4px;
+    }
+
+    .photo-button img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 420ms ease, filter 420ms ease;
     }
 
     .section {
@@ -193,210 +220,6 @@
       font-size: clamp(32px, 5vw, 64px);
       line-height: 0.98;
       letter-spacing: 0;
-    }
-
-    .section-note {
-      margin: 0;
-      color: var(--muted);
-      font-size: 13px;
-    }
-
-    .filters {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      margin-bottom: clamp(18px, 2.4vw, 30px);
-    }
-
-    .filter-button {
-      width: 34px;
-      height: 34px;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      padding: 0;
-      border: 1px solid var(--line);
-      border-radius: 999px;
-      background: rgba(255, 255, 255, 0.32);
-      color: var(--muted);
-      cursor: pointer;
-    }
-
-    .filter-button:hover,
-    .filter-button:focus-visible,
-    .filter-button.is-active {
-      color: var(--ink);
-      border-color: rgba(24, 22, 20, 0.44);
-      outline: none;
-    }
-
-    .filter-button.is-active {
-      background: rgba(255, 255, 255, 0.68);
-    }
-
-    .filter-swatch {
-      width: 18px;
-      height: 18px;
-      border-radius: 50%;
-      background: var(--tone);
-      box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.14);
-      flex: 0 0 auto;
-    }
-
-    .work-grid {
-      display: grid;
-      grid-template-columns: repeat(12, minmax(0, 1fr));
-      grid-auto-rows: 9px;
-      gap: clamp(7px, 1vw, 14px);
-      align-items: stretch;
-    }
-
-    .work-card {
-      position: relative;
-      grid-column: span 3;
-      grid-row: span 34;
-      display: grid;
-      min-height: 0;
-      border: 0;
-      padding: 0;
-      overflow: hidden;
-      background: #d7d1c7;
-      cursor: pointer;
-    }
-
-    .work-card[data-shape="wide"] {
-      grid-column: span 5;
-      grid-row: span 26;
-    }
-
-    .work-card[data-shape="tall"] {
-      grid-column: span 3;
-      grid-row: span 46;
-    }
-
-    .work-card[data-shape="square"] {
-      grid-column: span 4;
-      grid-row: span 38;
-    }
-
-    .work-card[data-shape="panorama"] {
-      grid-column: span 7;
-      grid-row: span 24;
-    }
-
-    .work-card[data-shape="small"] {
-      grid-column: span 2;
-      grid-row: span 24;
-    }
-
-    .work-card[data-shift="1"] {
-      transform: translateY(clamp(12px, 2.2vw, 32px));
-    }
-
-    .work-card[data-shift="2"] {
-      transform: translateY(clamp(-18px, -1.8vw, -8px));
-    }
-
-    .work-card[data-shift="3"] {
-      transform: translateY(clamp(24px, 3vw, 48px));
-    }
-
-    .work-card:hover .work-image,
-    .work-card:focus-visible .work-image {
-      transform: scale(1.025);
-      filter: saturate(0.92);
-    }
-
-    .work-card:focus-visible {
-      outline: 2px solid var(--tone);
-      outline-offset: 4px;
-    }
-
-    .work-image {
-      height: 100%;
-      object-fit: cover;
-      transition: transform 420ms ease, filter 420ms ease;
-    }
-
-    .color-index {
-      display: grid;
-      grid-template-columns: repeat(12, minmax(0, 1fr));
-      gap: clamp(8px, 1.2vw, 16px);
-    }
-
-    .color-card {
-      position: relative;
-      grid-column: span 4;
-      min-height: clamp(210px, 24vw, 340px);
-      display: grid;
-      align-content: end;
-      padding: 14px;
-      overflow: hidden;
-      background: var(--tone);
-      color: white;
-    }
-
-    .color-card:nth-child(2n) {
-      grid-column: span 3;
-      min-height: clamp(250px, 31vw, 420px);
-    }
-
-    .color-card:nth-child(3n) {
-      grid-column: span 5;
-    }
-
-    .color-card:nth-child(5n) {
-      margin-top: clamp(20px, 4vw, 56px);
-    }
-
-    .color-card img {
-      position: absolute;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      opacity: 0.82;
-      transition: opacity 360ms ease, transform 480ms ease;
-    }
-
-    .color-card:hover img,
-    .color-card:focus-visible img {
-      opacity: 0.94;
-      transform: scale(1.035);
-    }
-
-    .color-card:focus-visible {
-      outline: 2px solid var(--ink);
-      outline-offset: 4px;
-    }
-
-    .color-card::after {
-      content: "";
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(180deg, rgba(0, 0, 0, 0.02), rgba(0, 0, 0, 0.18));
-    }
-
-    .color-body {
-      position: relative;
-      z-index: 1;
-      display: grid;
-      gap: 7px;
-    }
-
-    .color-chip {
-      width: clamp(40px, 5vw, 68px);
-      height: clamp(40px, 5vw, 68px);
-      border-radius: 50%;
-      background: var(--tone);
-      box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.34), inset 0 0 0 1px rgba(0, 0, 0, 0.16);
-    }
-
-    .color-count {
-      font-size: 12px;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      opacity: 0.76;
     }
 
     .info {
@@ -459,8 +282,10 @@
     }
 
     .lightbox-image {
-      object-fit: contain;
+      width: 100%;
+      height: 100%;
       max-height: calc(100svh - 88px);
+      object-fit: contain;
     }
 
     .lightbox-bar {
@@ -539,44 +364,40 @@
       cursor: default;
     }
 
-    @media (max-width: 1080px) {
-      .hero-grid {
-        grid-template-columns: 1fr 1fr;
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+
+    @media (max-width: 920px) {
+      .wall-group {
+        grid-template-columns: clamp(18px, 4vw, 34px) minmax(0, 1fr);
       }
 
-      .hero-tile:first-child,
-      .hero-tile:nth-child(2) {
-        grid-column: auto;
-        grid-row: auto;
+      .wall-grid {
+        grid-template-columns: repeat(6, minmax(0, 1fr));
       }
 
-      .work-grid {
-        grid-template-columns: repeat(8, minmax(0, 1fr));
+      .photo-button,
+      .photo-button[data-shape="large"],
+      .photo-button[data-shape="tall"] {
+        grid-column: span 3;
       }
 
-      .work-card,
-      .work-card[data-shape="wide"],
-      .work-card[data-shape="square"] {
-        grid-column: span 4;
-      }
-
-      .work-card[data-shape="panorama"] {
-        grid-column: span 8;
-      }
-
-      .work-card[data-shape="small"],
-      .work-card[data-shape="tall"] {
-        grid-column: span 4;
-      }
-
-      .color-card,
-      .color-card:nth-child(2n),
-      .color-card:nth-child(3n) {
+      .photo-button[data-shape="wide"],
+      .photo-button[data-shape="panorama"] {
         grid-column: span 6;
       }
     }
 
-    @media (max-width: 720px) {
+    @media (max-width: 640px) {
       .site-header {
         grid-template-columns: auto auto;
       }
@@ -586,63 +407,56 @@
         gap: 12px;
       }
 
-      .header-count {
-        display: none;
+      .header-count { display: none; }
+
+      .works {
+        padding-top: 16px;
       }
 
-      .intro {
+      .wall {
+        gap: clamp(34px, 10vw, 58px);
+      }
+
+      .wall-group {
+        grid-template-columns: 1fr;
         min-height: auto;
       }
 
-      .intro-line,
-      .intro-meta,
+      .wall-rail {
+        position: static;
+        width: 100%;
+        min-height: 16px;
+      }
+
+      .wall-grid {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        grid-auto-rows: 16px;
+      }
+
+      .photo-button,
+      .photo-button[data-shape="large"],
+      .photo-button[data-shape="small"],
+      .photo-button[data-shape="wide"],
+      .photo-button[data-shape="tall"],
+      .photo-button[data-shape="panorama"] {
+        grid-column: span 2;
+        grid-row: span 13;
+      }
+
+      .photo-button[data-shape="wide"],
+      .photo-button[data-shape="panorama"] {
+        grid-column: span 4;
+        grid-row: span 12;
+      }
+
       .section-head,
       .footer {
         align-items: start;
         flex-direction: column;
       }
 
-      .hero-grid {
-        grid-template-columns: 1fr 1fr;
-        grid-template-rows: 30svh 22svh 22svh;
-      }
-
-      .hero-tile:first-child,
-      .hero-tile:nth-child(4) {
-        grid-column: span 2;
-      }
-
-      .hero-tile:nth-child(2) {
-        grid-column: auto;
-      }
-
-      .work-grid {
-        grid-template-columns: repeat(4, minmax(0, 1fr));
-        grid-auto-rows: 8px;
-      }
-
-      .work-card,
-      .work-card[data-shape="wide"],
-      .work-card[data-shape="tall"],
-      .work-card[data-shape="square"],
-      .work-card[data-shape="panorama"],
-      .work-card[data-shape="small"] {
-        grid-column: span 4;
-      }
-
-      .work-card[data-shift] {
-        transform: none;
-      }
-
-      .color-index,
       .info {
         grid-template-columns: 1fr;
-      }
-
-      .color-card,
-      .color-card:nth-child(2n),
-      .color-card:nth-child(3n) {
-        grid-column: auto;
       }
 
       .lightbox-bar {
@@ -656,44 +470,20 @@
   </style>
 </head>
 <body>
-  <header class="site-header" id="siteHeader">
-    <a class="brand" href="#home" aria-label="回到首页">Zy</a>
+  <header class="site-header">
+    <a class="brand" href="#works" aria-label="回到作品">Zy</a>
     <nav class="nav" aria-label="站点导航">
       <a href="#works">Works</a>
-      <a href="#index">Palette</a>
       <a href="#info">Info</a>
     </nav>
     <div class="header-count" id="headerCount">0 works</div>
   </header>
 
   <main>
-    <section class="intro" id="home" aria-label="Zy Photography">
-      <div class="intro-line">
-        <div class="color-strip" id="colorStrip" aria-label="作品颜色索引"></div>
-        <span>Photography</span>
-      </div>
-      <div class="hero-grid" id="heroGrid"></div>
-      <div class="intro-meta">
-        <span>Selected works</span>
-        <span>Color as index</span>
-      </div>
-    </section>
-
-    <section class="section" id="works">
-      <div class="section-head">
-        <h1 class="section-title">Works</h1>
-        <p class="section-note">By color.</p>
-      </div>
-      <div class="filters" id="filters" aria-label="作品筛选"></div>
-      <div class="work-grid" id="workGrid" aria-live="polite"></div>
-    </section>
-
-    <section class="section" id="index">
-      <div class="section-head">
-        <h2 class="section-title">Palette</h2>
-        <p class="section-note">No names.</p>
-      </div>
-      <div class="color-index" id="colorIndex"></div>
+    <section class="works" id="works" aria-label="Works">
+      <h1 class="sr-only">Works</h1>
+      <div class="color-strip" id="colorStrip" aria-label="作品颜色索引"></div>
+      <div class="wall" id="workWall"></div>
     </section>
 
     <section class="section" id="info">
@@ -743,10 +533,7 @@
     const fallbackColor = "#9a9287";
 
     const colorStrip = document.getElementById("colorStrip");
-    const heroGrid = document.getElementById("heroGrid");
-    const filters = document.getElementById("filters");
-    const workGrid = document.getElementById("workGrid");
-    const colorIndex = document.getElementById("colorIndex");
+    const workWall = document.getElementById("workWall");
     const headerCount = document.getElementById("headerCount");
     const footerCount = document.getElementById("footerCount");
     const lightbox = document.getElementById("lightbox");
@@ -757,7 +544,6 @@
     const lightboxPrev = document.getElementById("lightboxPrev");
     const lightboxNext = document.getElementById("lightboxNext");
 
-    let activeColorGroup = "all";
     let lightboxIndex = -1;
     let lightboxReturnFocus = null;
 
@@ -797,6 +583,28 @@
       };
       group.color = rgbToHex(group.rgb);
       group.count = nextCount;
+    }
+
+    function hueFromColor(hex) {
+      const { r, g, b } = hexToRgb(hex);
+      const red = r / 255;
+      const green = g / 255;
+      const blue = b / 255;
+      const max = Math.max(red, green, blue);
+      const min = Math.min(red, green, blue);
+      if (max === min) {
+        return 0;
+      }
+      let value = 0;
+      if (max === red) value = (green - blue) / (max - min);
+      if (max === green) value = 2 + (blue - red) / (max - min);
+      if (max === blue) value = 4 + (red - green) / (max - min);
+      return (value * 60 + 360) % 360;
+    }
+
+    function luminance(photo) {
+      const { r, g, b } = hexToRgb(photoColor(photo));
+      return (0.2126 * r + 0.7152 * g + 0.0722 * b) / 255;
     }
 
     function buildColorGroups(items) {
@@ -848,22 +656,30 @@
       }
 
       return groups
-        .sort((a, b) => b.photos.length - a.photos.length)
+        .sort((a, b) => hueFromColor(a.color) - hueFromColor(b.color))
         .map((group, index) => ({ ...group, id: `color-${index + 1}` }));
     }
 
     const colorGroups = buildColorGroups(photos);
 
-    function filteredPhotos() {
-      if (activeColorGroup === "all") {
-        return photos;
-      }
-      const group = colorGroups.find((item) => item.id === activeColorGroup);
-      return group ? group.photos : photos;
-    }
-
     function lightboxInfo(photo) {
       return [photo.year, photo.cameraMeta].filter(Boolean).join(" · ");
+    }
+
+    function photoShape(photo, index) {
+      if (photo.orientation === "panorama") {
+        return "panorama";
+      }
+      if (photo.orientation === "portrait") {
+        return index % 4 === 1 ? "small" : "tall";
+      }
+      if (photo.orientation === "square") {
+        return index % 3 === 0 ? "small" : "large";
+      }
+      if (index % 5 === 0) return "large";
+      if (index % 4 === 0) return "wide";
+      if (index % 4 === 1) return "small";
+      return "medium";
     }
 
     function renderColorStrip() {
@@ -872,72 +688,19 @@
       `).join("");
     }
 
-    function renderHero() {
-      const latest = photos.slice(-4);
-      const featured = photos.filter((photo) => photo.featured);
-      const pool = [...latest, ...featured, ...photos];
-      const seen = new Set();
-      const items = pool.filter((photo) => {
-        if (seen.has(photo.id)) {
-          return false;
-        }
-        seen.add(photo.id);
-        return true;
-      }).slice(0, 4);
-      heroGrid.innerHTML = items.map((photo) => `
-        <a class="hero-tile" href="#works" style="--tone: ${photoColor(photo)}" aria-label="进入作品">
-          <img src="${photo.image}" alt="${photo.alt}" />
-        </a>
+    function renderWall() {
+      workWall.innerHTML = colorGroups.map((group) => `
+        <section class="wall-group" style="--tone: ${group.color}" aria-label="${group.photos.length} works">
+          <div class="wall-rail" aria-hidden="true"></div>
+          <div class="wall-grid">
+            ${group.photos.sort((a, b) => luminance(a) - luminance(b)).map((photo, index) => `
+              <button class="photo-button" type="button" data-work="${photo.id}" data-shape="${photoShape(photo, index)}" style="--tone: ${photoColor(photo)}" aria-label="查看照片，${lightboxInfo(photo) || photo.year || "color"}">
+                <img src="${photo.thumb || photo.image}" alt="${photo.alt}" loading="lazy" />
+              </button>
+            `).join("")}
+          </div>
+        </section>
       `).join("");
-    }
-
-    function renderFilters() {
-      const groups = [{ id: "all", color: "#181614", photos }, ...colorGroups];
-      filters.innerHTML = groups.map((group, index) => {
-        const isActive = group.id === activeColorGroup;
-        return `
-          <button class="filter-button ${isActive ? "is-active" : ""}" type="button" data-filter="${group.id}" aria-pressed="${isActive}" aria-label="${index === 0 ? "显示全部照片" : `筛选色组 ${index}`}，${group.photos.length} 张">
-            <span class="filter-swatch" style="--tone: ${group.color}"></span>
-          </button>
-        `;
-      }).join("");
-    }
-
-    function photoShape(photo, index) {
-      if (photo.orientation === "panorama") {
-        return "panorama";
-      }
-      if (photo.orientation === "portrait") {
-        return index % 5 === 0 ? "small" : "tall";
-      }
-      if (photo.orientation === "square") {
-        return index % 4 === 0 ? "small" : "square";
-      }
-      return index % 6 === 0 ? "square" : index % 3 === 0 ? "small" : "wide";
-    }
-
-    function renderWorks() {
-      const visible = filteredPhotos();
-      workGrid.innerHTML = visible.map((photo, index) => `
-        <button class="work-card" type="button" data-work="${photo.id}" data-shape="${photoShape(photo, index)}" data-shift="${index % 4}" style="--tone: ${photoColor(photo)}" aria-label="查看照片，${lightboxInfo(photo) || photo.year || "color"}">
-          <img class="work-image" src="${photo.thumb || photo.image}" alt="${photo.alt}" loading="lazy" />
-        </button>
-      `).join("");
-    }
-
-    function renderColorIndex() {
-      colorIndex.innerHTML = colorGroups.map((group, index) => {
-        const cover = group.photos.find((photo) => photo.featured) || group.photos[0];
-        return `
-          <a class="color-card" href="#works" data-color-group="${group.id}" style="--tone: ${group.color}" aria-label="查看色组 ${index + 1}">
-            <img src="${cover.thumb || cover.image}" alt="${cover.alt}" loading="lazy" />
-            <div class="color-body">
-              <span class="color-chip"></span>
-              <span class="color-count">${String(group.photos.length).padStart(2, "0")}</span>
-            </div>
-          </a>
-        `;
-      }).join("");
     }
 
     function renderLightbox() {
@@ -990,35 +753,18 @@
       renderLightbox();
     }
 
-    function updateFilter(name) {
-      activeColorGroup = name;
-      renderFilters();
-      renderWorks();
-    }
-
     document.addEventListener("click", (event) => {
       const target = event.target instanceof Element ? event.target : null;
       if (!target) {
         return;
       }
 
-      const filterTarget = target.closest("[data-filter]");
       const workTarget = target.closest("[data-work]");
-      const colorTarget = target.closest("[data-color-group]");
       const anchorTarget = target.closest('a[href^="#"]');
-
-      if (filterTarget) {
-        updateFilter(filterTarget.dataset.filter);
-        return;
-      }
 
       if (workTarget) {
         openLightbox(workTarget.dataset.work, workTarget);
         return;
-      }
-
-      if (colorTarget) {
-        updateFilter(colorTarget.dataset.colorGroup);
       }
 
       if (anchorTarget) {
@@ -1061,10 +807,7 @@
     lightboxNext.addEventListener("click", () => stepLightbox(1));
 
     renderColorStrip();
-    renderHero();
-    renderFilters();
-    renderWorks();
-    renderColorIndex();
+    renderWall();
     headerCount.textContent = `${photos.length} works`;
     footerCount.textContent = `${photos.length} works`;
   </script>
