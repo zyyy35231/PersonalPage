@@ -151,6 +151,11 @@
       grid-row: span 17;
     }
 
+    .photo-button[data-shape="cover"] {
+      grid-column: span 6;
+      grid-row: span 19;
+    }
+
     .photo-button[data-shape="small"] {
       grid-column: span 2;
       grid-row: span 10;
@@ -387,6 +392,7 @@
 
       .photo-button,
       .photo-button[data-shape="large"],
+      .photo-button[data-shape="cover"],
       .photo-button[data-shape="tall"] {
         grid-column: span 3;
       }
@@ -435,6 +441,7 @@
 
       .photo-button,
       .photo-button[data-shape="large"],
+      .photo-button[data-shape="cover"],
       .photo-button[data-shape="small"],
       .photo-button[data-shape="wide"],
       .photo-button[data-shape="tall"],
@@ -634,11 +641,19 @@
         mixColor(bestGroup, rgb);
       });
 
-      while (groups.length > 9) {
+      const minimumGroupSize = items.length >= 18 ? 3 : 2;
+      while (groups.length > 6 || groups.some((group) => group.photos.length < minimumGroupSize)) {
+        if (groups.length < 2) {
+          break;
+        }
         let pair = [0, 1];
         let bestDistance = Infinity;
+        const smallGroupExists = groups.some((group) => group.photos.length < minimumGroupSize);
         for (let index = 0; index < groups.length; index += 1) {
           for (let next = index + 1; next < groups.length; next += 1) {
+            if (smallGroupExists && groups[index].photos.length >= minimumGroupSize && groups[next].photos.length >= minimumGroupSize) {
+              continue;
+            }
             const distance = colorDistance(groups[index].rgb, groups[next].rgb);
             if (distance < bestDistance) {
               bestDistance = distance;
@@ -656,7 +671,12 @@
       }
 
       return groups
-        .sort((a, b) => hueFromColor(a.color) - hueFromColor(b.color))
+        .sort((a, b) => {
+          const firstOrder = groupHomepageOrder(a);
+          const secondOrder = groupHomepageOrder(b);
+          if (firstOrder !== secondOrder) return firstOrder - secondOrder;
+          return hueFromColor(a.color) - hueFromColor(b.color);
+        })
         .map((group, index) => ({ ...group, id: `color-${index + 1}` }));
     }
 
@@ -666,7 +686,29 @@
       return [photo.year, photo.cameraMeta].filter(Boolean).join(" · ");
     }
 
+    function homepageOrder(photo) {
+      const value = Number.parseInt(photo.homepageOrder, 10);
+      return Number.isInteger(value) && value > 0 ? value : Number.MAX_SAFE_INTEGER;
+    }
+
+    function groupHomepageOrder(group) {
+      return Math.min(...group.photos.map(homepageOrder));
+    }
+
+    function sortGroupPhotos(items) {
+      return [...items].sort((first, second) => {
+        const coverDifference = Number(Boolean(second.colorCover)) - Number(Boolean(first.colorCover));
+        if (coverDifference) return coverDifference;
+        const orderDifference = homepageOrder(first) - homepageOrder(second);
+        if (orderDifference) return orderDifference;
+        return luminance(first) - luminance(second);
+      });
+    }
+
     function photoShape(photo, index) {
+      if (photo.colorCover && photo.orientation !== "panorama") {
+        return "cover";
+      }
       if (photo.orientation === "panorama") {
         return "panorama";
       }
@@ -693,7 +735,7 @@
         <section class="wall-group" style="--tone: ${group.color}" aria-label="${group.photos.length} works">
           <div class="wall-rail" aria-hidden="true"></div>
           <div class="wall-grid">
-            ${group.photos.sort((a, b) => luminance(a) - luminance(b)).map((photo, index) => `
+            ${sortGroupPhotos(group.photos).map((photo, index) => `
               <button class="photo-button" type="button" data-work="${photo.id}" data-shape="${photoShape(photo, index)}" style="--tone: ${photoColor(photo)}" aria-label="查看照片，${lightboxInfo(photo) || photo.year || "color"}">
                 <img src="${photo.thumb || photo.image}" alt="${photo.alt}" loading="lazy" />
               </button>

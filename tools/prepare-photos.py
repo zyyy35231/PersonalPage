@@ -85,8 +85,21 @@ def draft_entry(path: Path, slug: str, width: int, height: int, out_dir: Path, c
         "orientation": image_orientation(width, height),
         "color": extract_accent_color(path),
         "featured": False,
+        "homepageOrder": 0,
+        "colorCover": False,
         "cameraMeta": f"{width} x {height}" if width and height else ""
     }
+
+
+def apply_curation_metadata(entry: dict, curation: dict | None) -> None:
+    if not curation:
+        return
+    homepage_order = curation.get("homepageOrder", 0)
+    if not isinstance(homepage_order, int) or homepage_order < 1:
+        homepage_order = 0
+    entry["series"] = curation.get("series") or "未分类"
+    entry["homepageOrder"] = homepage_order
+    entry["colorCover"] = bool(curation.get("colorCover", False))
 
 
 def main() -> None:
@@ -118,7 +131,7 @@ def main() -> None:
     else:
         work_items = [(path, None, slugify(path.stem)) for path in source_files(source, args.files)]
     entries = [] if args.replace_data else read_existing_data(data_path)
-    known_ids = {entry["id"] for entry in entries}
+    entries_by_id = {entry["id"]: entry for entry in entries}
 
     for index, (path, curation, slug) in enumerate(work_items):
         image_out = out_dir / f"{slug}.jpg"
@@ -127,11 +140,12 @@ def main() -> None:
         width, height = write_web_jpeg(path, image_out, args.max_edge, args.quality, args.force)
         write_web_jpeg(path, thumb_out, args.thumb_edge, args.thumb_quality, args.force)
 
-        if slug not in known_ids:
+        if slug not in entries_by_id:
             entry = draft_entry(path, slug, width, height, out_dir, curation)
             entry["featured"] = index < args.featured_first
             entries.append(entry)
-            known_ids.add(slug)
+            entries_by_id[slug] = entry
+        apply_curation_metadata(entries_by_id[slug], curation)
 
         print(f"prepared {path.name} -> {image_out}")
 

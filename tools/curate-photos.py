@@ -60,6 +60,7 @@ HTML = r"""<!doctype html>
     }
 
     button,
+    input,
     select,
     textarea { font: inherit; }
 
@@ -445,6 +446,7 @@ HTML = r"""<!doctype html>
       text-transform: uppercase;
     }
 
+    .field input,
     .field select,
     .field textarea {
       width: 100%;
@@ -459,6 +461,26 @@ HTML = r"""<!doctype html>
       min-height: 88px;
       resize: vertical;
       line-height: 1.5;
+    }
+
+    .cover-field {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      min-height: 38px;
+      color: var(--ink);
+      cursor: pointer;
+    }
+
+    .cover-field input {
+      width: 16px;
+      height: 16px;
+      margin: 0;
+      accent-color: var(--accent);
+    }
+
+    .cover-field span {
+      font-size: 13px;
     }
 
     .save-state {
@@ -581,6 +603,14 @@ HTML = r"""<!doctype html>
               <select id="seriesSelect"></select>
             </div>
             <div class="field">
+              <label for="homepageOrderInput">首页顺序</label>
+              <input id="homepageOrderInput" type="number" min="1" step="1" inputmode="numeric" placeholder="留空则自动排列" />
+            </div>
+            <label class="cover-field" for="colorCoverInput">
+              <input id="colorCoverInput" type="checkbox" />
+              <span>作为色组封面</span>
+            </label>
+            <div class="field">
               <label for="noteInput">Note</label>
               <textarea id="noteInput" placeholder="构图、颜色、入站理由或后续处理想法"></textarea>
             </div>
@@ -623,6 +653,8 @@ HTML = r"""<!doctype html>
     const photoName = document.getElementById("photoName");
     const photoMeta = document.getElementById("photoMeta");
     const seriesSelect = document.getElementById("seriesSelect");
+    const homepageOrderInput = document.getElementById("homepageOrderInput");
+    const colorCoverInput = document.getElementById("colorCoverInput");
     const noteInput = document.getElementById("noteInput");
     const saveState = document.getElementById("saveState");
     const statusButtons = [...document.querySelectorAll("[data-status]")];
@@ -724,6 +756,8 @@ HTML = r"""<!doctype html>
         photoMeta.textContent = "";
         noteInput.value = "";
         seriesSelect.value = "未分类";
+        homepageOrderInput.value = "";
+        colorCoverInput.checked = false;
         return;
       }
 
@@ -733,6 +767,8 @@ HTML = r"""<!doctype html>
       photoMeta.textContent = formatPhotoMeta(photo);
       noteInput.value = photo.note || "";
       seriesSelect.value = photo.series || "未分类";
+      homepageOrderInput.value = photo.homepageOrder || "";
+      colorCoverInput.checked = Boolean(photo.colorCover);
       const activeButton = statusButtons.find((button) => button.dataset.status === photo.status);
       if (activeButton) activeButton.classList.add("is-active");
       loadPhotoMeta(photo);
@@ -802,6 +838,8 @@ HTML = r"""<!doctype html>
           body: JSON.stringify({
             status: photo.status,
             series: photo.series,
+            homepageOrder: photo.homepageOrder,
+            colorCover: photo.colorCover,
             note: photo.note
           })
         });
@@ -871,6 +909,11 @@ HTML = r"""<!doctype html>
 
     seriesSelect.innerHTML = %SERIES_OPTIONS%;
     seriesSelect.addEventListener("change", () => queueSave({ series: seriesSelect.value }));
+    homepageOrderInput.addEventListener("change", () => {
+      const value = Number.parseInt(homepageOrderInput.value, 10);
+      queueSave({ homepageOrder: Number.isInteger(value) && value > 0 ? value : 0 });
+    });
+    colorCoverInput.addEventListener("change", () => queueSave({ colorCover: colorCoverInput.checked }));
     noteInput.addEventListener("input", () => queueSave({ note: noteInput.value }));
     statusFilter.addEventListener("change", renderPhotos);
     saveButton.addEventListener("click", saveNow);
@@ -995,6 +1038,9 @@ class CurationStore:
         series = entry.get("series", "未分类")
         if series not in SERIES:
             series = "未分类"
+        homepage_order = entry.get("homepageOrder", 0)
+        if not isinstance(homepage_order, int) or homepage_order < 1:
+            homepage_order = 0
         return {
             "id": stable_id(path),
             "sourcePath": source_path,
@@ -1006,6 +1052,8 @@ class CurationStore:
             "orientation": image_orientation(width, height),
             "status": status,
             "series": series,
+            "homepageOrder": homepage_order,
+            "colorCover": bool(entry.get("colorCover", False)),
             "note": entry.get("note", ""),
             "updatedAt": entry.get("updatedAt", ""),
         }
@@ -1071,10 +1119,16 @@ class CurationStore:
         if series not in SERIES:
             series = "未分类"
         note = str(patch.get("note", photo.get("note", "")))
+        homepage_order = patch.get("homepageOrder", photo.get("homepageOrder", 0))
+        if not isinstance(homepage_order, int) or homepage_order < 1:
+            homepage_order = 0
+        color_cover = bool(patch.get("colorCover", photo.get("colorCover", False)))
 
         photo.update({
             "status": status,
             "series": series,
+            "homepageOrder": homepage_order,
+            "colorCover": color_cover,
             "note": note,
             "updatedAt": now_iso(),
         })
@@ -1087,6 +1141,8 @@ class CurationStore:
             "orientation": photo["orientation"],
             "status": photo["status"],
             "series": photo["series"],
+            "homepageOrder": photo["homepageOrder"],
+            "colorCover": photo["colorCover"],
             "note": photo["note"],
             "updatedAt": photo["updatedAt"],
         }
