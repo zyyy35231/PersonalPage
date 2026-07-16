@@ -369,8 +369,7 @@ HTML = r"""<!doctype html>
       min-width: 0;
       min-height: 0;
       height: 100%;
-      overflow: auto;
-      overscroll-behavior: contain;
+      overflow: hidden;
       border-left: 1px solid var(--line);
       background: var(--panel);
       display: flex;
@@ -378,8 +377,8 @@ HTML = r"""<!doctype html>
     }
 
     .preview {
-      flex: 1 1 auto;
-      min-height: 320px;
+      flex: 0 0 clamp(360px, 58vh, 560px);
+      min-height: 0;
       display: grid;
       place-items: center;
       padding: 18px;
@@ -390,10 +389,10 @@ HTML = r"""<!doctype html>
     }
 
     .preview img {
-      width: auto;
-      height: auto;
-      max-width: 100%;
-      max-height: 100%;
+      width: 100%;
+      height: 100%;
+      min-width: 0;
+      min-height: 0;
       object-fit: contain;
     }
 
@@ -409,7 +408,10 @@ HTML = r"""<!doctype html>
     }
 
     .editor {
-      flex: 0 0 auto;
+      flex: 1 1 auto;
+      min-height: 0;
+      overflow-y: auto;
+      overscroll-behavior: contain;
       border-top: 1px solid var(--line);
       padding: 16px;
       display: grid;
@@ -551,8 +553,20 @@ HTML = r"""<!doctype html>
       }
 
       .detail {
+        height: auto;
+        overflow: visible;
         border-left: 0;
         border-top: 1px solid var(--line);
+      }
+
+      .preview {
+        flex-basis: min(58vh, 520px);
+        min-height: 320px;
+      }
+
+      .editor {
+        min-height: auto;
+        overflow: visible;
       }
 
       .preview img {
