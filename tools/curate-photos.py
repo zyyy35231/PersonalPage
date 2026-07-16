@@ -647,6 +647,7 @@ HTML = r"""<!doctype html>
     const statusFilter = document.getElementById("statusFilter");
     const saveButton = document.getElementById("saveButton");
     const refreshButton = document.getElementById("refreshButton");
+    const gridWrap = document.querySelector(".grid-wrap");
     const photoGrid = document.getElementById("photoGrid");
     const preview = document.getElementById("preview");
     const editor = document.getElementById("editor");
@@ -737,12 +738,27 @@ HTML = r"""<!doctype html>
         renderDetail();
         return;
       }
-      activeIndex = Math.max(0, Math.min(visible.length - 1, index));
+      const nextIndex = Math.max(0, Math.min(visible.length - 1, index));
+      const changed = nextIndex !== activeIndex;
+      activeIndex = nextIndex;
       renderDetail();
       const button = document.querySelector(`.photo-button[data-index="${activeIndex}"]`);
       if (button) {
-        button.scrollIntoView({ block: "nearest", inline: "nearest" });
+        if (changed) scrollActiveButtonIntoGrid(button);
         if (shouldFocus) button.focus({ preventScroll: true });
+      }
+    }
+
+    function scrollActiveButtonIntoGrid(button) {
+      if (!gridWrap) return;
+      const padding = 12;
+      const gridRect = gridWrap.getBoundingClientRect();
+      const buttonRect = button.getBoundingClientRect();
+
+      if (buttonRect.top < gridRect.top + padding) {
+        gridWrap.scrollTop += buttonRect.top - gridRect.top - padding;
+      } else if (buttonRect.bottom > gridRect.bottom - padding) {
+        gridWrap.scrollTop += buttonRect.bottom - gridRect.bottom + padding;
       }
     }
 
