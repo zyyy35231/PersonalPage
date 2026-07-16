@@ -50,9 +50,14 @@ HTML = r"""<!doctype html>
     }
 
     * { box-sizing: border-box; }
+    html,
     body {
       margin: 0;
-      min-height: 100vh;
+      height: 100%;
+      overflow: hidden;
+    }
+
+    body {
       color: var(--ink);
       background: var(--bg);
       font-family: var(--font-body);
@@ -72,17 +77,21 @@ HTML = r"""<!doctype html>
     img { display: block; max-width: 100%; }
 
     .app {
-      min-height: 100vh;
+      height: 100vh;
+      min-height: 0;
+      overflow: hidden;
       display: grid;
       grid-template-columns: minmax(280px, 340px) minmax(0, 1fr);
     }
 
     .sidebar {
-      min-height: 100vh;
+      min-height: 0;
+      height: 100%;
+      overflow: hidden;
       border-right: 1px solid var(--line);
       background: rgba(251, 250, 247, 0.86);
       display: grid;
-      grid-template-rows: auto auto minmax(0, 1fr);
+      grid-template-rows: auto auto minmax(0, 1fr) auto;
     }
 
     .brand,
@@ -143,6 +152,7 @@ HTML = r"""<!doctype html>
 
     .folder-list {
       overflow: auto;
+      overscroll-behavior: contain;
       display: grid;
       align-content: start;
       gap: 8px;
@@ -192,6 +202,9 @@ HTML = r"""<!doctype html>
 
     .main {
       min-width: 0;
+      min-height: 0;
+      height: 100%;
+      overflow: hidden;
       display: grid;
       grid-template-rows: auto minmax(0, 1fr);
     }
@@ -264,7 +277,7 @@ HTML = r"""<!doctype html>
 
     .workspace {
       min-height: 0;
-      height: calc(100vh - 79px);
+      overflow: hidden;
       display: grid;
       grid-template-columns: minmax(0, 1fr) minmax(320px, 420px);
       align-items: stretch;
@@ -272,8 +285,10 @@ HTML = r"""<!doctype html>
 
     .grid-wrap {
       min-width: 0;
+      min-height: 0;
       height: 100%;
       overflow: auto;
+      overscroll-behavior: contain;
       padding: 18px;
     }
 
@@ -352,7 +367,10 @@ HTML = r"""<!doctype html>
 
     .detail {
       min-width: 0;
+      min-height: 0;
       height: 100%;
+      overflow: auto;
+      overscroll-behavior: contain;
       border-left: 1px solid var(--line);
       background: var(--panel);
       display: flex;
@@ -490,14 +508,35 @@ HTML = r"""<!doctype html>
     }
 
     @media (max-width: 1120px) {
+      html,
+      body {
+        height: auto;
+        overflow: auto;
+      }
+
       .app {
+        height: auto;
+        min-height: 100vh;
+        overflow: visible;
         grid-template-columns: 1fr;
       }
 
-      .sidebar {
+      .sidebar,
+      .main {
+        height: auto;
         min-height: auto;
+        overflow: visible;
+      }
+
+      .sidebar {
         border-right: 0;
         border-bottom: 1px solid var(--line);
+        grid-template-rows: auto auto auto auto;
+      }
+
+      .workspace {
+        height: auto;
+        overflow: visible;
       }
 
       .folder-list {
