@@ -192,7 +192,9 @@ window.ZY_PHOTOS = [
     "orientation": "landscape",
     "color": "#2fa8ee",
     "featured": false,
-    "cameraMeta": "6592 x 6072"
+    "cameraMeta": "6592 x 6072",
+    "homepageOrder": 0,
+    "colorCover": false
   },
   {
     "id": "capture-one-catalog3184-743771f7",
@@ -205,7 +207,9 @@ window.ZY_PHOTOS = [
     "orientation": "portrait",
     "color": "#99bee3",
     "featured": false,
-    "cameraMeta": "5668 x 6237"
+    "cameraMeta": "5668 x 6237",
+    "homepageOrder": 0,
+    "colorCover": false
   },
   {
     "id": "capture-one-catalog3834-49ce7d04",
@@ -218,7 +222,9 @@ window.ZY_PHOTOS = [
     "orientation": "portrait",
     "color": "#9bceff",
     "featured": false,
-    "cameraMeta": "5611 x 6109"
+    "cameraMeta": "5611 x 6109",
+    "homepageOrder": 0,
+    "colorCover": false
   },
   {
     "id": "capture-one-catalog4829-74a5dc5f",
@@ -231,7 +237,9 @@ window.ZY_PHOTOS = [
     "orientation": "landscape",
     "color": "#657081",
     "featured": false,
-    "cameraMeta": "6303 x 4203"
+    "cameraMeta": "6303 x 4203",
+    "homepageOrder": 0,
+    "colorCover": false
   },
   {
     "id": "capture-one-catalog5517-e36975e0",
@@ -244,7 +252,9 @@ window.ZY_PHOTOS = [
     "orientation": "landscape",
     "color": "#7fb7db",
     "featured": false,
-    "cameraMeta": "6237 x 5777"
+    "cameraMeta": "6237 x 5777",
+    "homepageOrder": 0,
+    "colorCover": false
   },
   {
     "id": "dsc00265-30bba549",
@@ -257,7 +267,9 @@ window.ZY_PHOTOS = [
     "orientation": "landscape",
     "color": "#828175",
     "featured": false,
-    "cameraMeta": "6617 x 6079"
+    "cameraMeta": "6617 x 6079",
+    "homepageOrder": 0,
+    "colorCover": false
   },
   {
     "id": "dsc00281-3c93f4ae",
@@ -270,7 +282,9 @@ window.ZY_PHOTOS = [
     "orientation": "landscape",
     "color": "#76c6fe",
     "featured": false,
-    "cameraMeta": "6632 x 6093"
+    "cameraMeta": "6632 x 6093",
+    "homepageOrder": 0,
+    "colorCover": false
   },
   {
     "id": "dsc00285-fb1eff16",
@@ -283,7 +297,9 @@ window.ZY_PHOTOS = [
     "orientation": "portrait",
     "color": "#858585",
     "featured": false,
-    "cameraMeta": "6135 x 6681"
+    "cameraMeta": "6135 x 6681",
+    "homepageOrder": 0,
+    "colorCover": false
   },
   {
     "id": "dsc00289-471e93f9",
@@ -296,7 +312,9 @@ window.ZY_PHOTOS = [
     "orientation": "landscape",
     "color": "#393939",
     "featured": false,
-    "cameraMeta": "6681 x 6135"
+    "cameraMeta": "6681 x 6135",
+    "homepageOrder": 0,
+    "colorCover": false
   },
   {
     "id": "dsc01777-7060de15",
@@ -309,7 +327,9 @@ window.ZY_PHOTOS = [
     "orientation": "landscape",
     "color": "#a59b91",
     "featured": false,
-    "cameraMeta": "9504 x 6336"
+    "cameraMeta": "9504 x 6336",
+    "homepageOrder": 0,
+    "colorCover": false
   },
   {
     "id": "dsc02288-b9d538b2",
@@ -322,7 +342,9 @@ window.ZY_PHOTOS = [
     "orientation": "portrait",
     "color": "#9acff5",
     "featured": false,
-    "cameraMeta": "3512 x 6240"
+    "cameraMeta": "3512 x 6240",
+    "homepageOrder": 0,
+    "colorCover": false
   },
   {
     "id": "dsc02290-2-5d468f76",
@@ -335,7 +357,9 @@ window.ZY_PHOTOS = [
     "orientation": "portrait",
     "color": "#53b6f7",
     "featured": false,
-    "cameraMeta": "5344 x 9504"
+    "cameraMeta": "5344 x 9504",
+    "homepageOrder": 0,
+    "colorCover": false
   },
   {
     "id": "dsc02305-4f645bcd",
@@ -348,7 +372,9 @@ window.ZY_PHOTOS = [
     "orientation": "landscape",
     "color": "#c7470f",
     "featured": false,
-    "cameraMeta": "8716 x 4901"
+    "cameraMeta": "8716 x 4901",
+    "homepageOrder": 0,
+    "colorCover": false
   },
   {
     "id": "dsc02363-1049129a",
@@ -361,7 +387,9 @@ window.ZY_PHOTOS = [
     "orientation": "landscape",
     "color": "#89807f",
     "featured": false,
-    "cameraMeta": "9504 x 6336"
+    "cameraMeta": "9504 x 6336",
+    "homepageOrder": 0,
+    "colorCover": false
   },
   {
     "id": "dsc02454-2-f247aba1",
@@ -374,7 +402,9 @@ window.ZY_PHOTOS = [
     "orientation": "landscape",
     "color": "#e5af48",
     "featured": false,
-    "cameraMeta": "9390 x 5280"
+    "cameraMeta": "9390 x 5280",
+    "homepageOrder": 0,
+    "colorCover": false
   },
   {
     "id": "dsc02552-4d0183c2",
@@ -387,7 +417,9 @@ window.ZY_PHOTOS = [
     "orientation": "landscape",
     "color": "#58bcf3",
     "featured": false,
-    "cameraMeta": "9504 x 6336"
+    "cameraMeta": "9504 x 6336",
+    "homepageOrder": 0,
+    "colorCover": false
   },
   {
     "id": "dsc02580-3dbe74de",
@@ -400,7 +432,9 @@ window.ZY_PHOTOS = [
     "orientation": "panorama",
     "color": "#ba8482",
     "featured": false,
-    "cameraMeta": "6201 x 2639"
+    "cameraMeta": "6201 x 2639",
+    "homepageOrder": 0,
+    "colorCover": false
   },
   {
     "id": "dsc02582-a05a3bb9",
@@ -413,7 +447,9 @@ window.ZY_PHOTOS = [
     "orientation": "portrait",
     "color": "#43b1ef",
     "featured": false,
-    "cameraMeta": "5344 x 9504"
+    "cameraMeta": "5344 x 9504",
+    "homepageOrder": 0,
+    "colorCover": false
   },
   {
     "id": "dsc02585-e1f73870",
@@ -426,7 +462,9 @@ window.ZY_PHOTOS = [
     "orientation": "portrait",
     "color": "#62d2fd",
     "featured": false,
-    "cameraMeta": "6336 x 9504"
+    "cameraMeta": "6336 x 9504",
+    "homepageOrder": 0,
+    "colorCover": false
   },
   {
     "id": "dsc04022-cfd9806f",
@@ -439,7 +477,9 @@ window.ZY_PHOTOS = [
     "orientation": "portrait",
     "color": "#1d2332",
     "featured": false,
-    "cameraMeta": "6336 x 9504"
+    "cameraMeta": "6336 x 9504",
+    "homepageOrder": 0,
+    "colorCover": false
   },
   {
     "id": "dsc04024-3d3d71a6",
@@ -452,7 +492,9 @@ window.ZY_PHOTOS = [
     "orientation": "panorama",
     "color": "#5b7b7e",
     "featured": false,
-    "cameraMeta": "7410 x 3153"
+    "cameraMeta": "7410 x 3153",
+    "homepageOrder": 0,
+    "colorCover": false
   },
   {
     "id": "dsc04025-050d2441",
@@ -465,7 +507,9 @@ window.ZY_PHOTOS = [
     "orientation": "landscape",
     "color": "#36585a",
     "featured": false,
-    "cameraMeta": "9504 x 6336"
+    "cameraMeta": "9504 x 6336",
+    "homepageOrder": 0,
+    "colorCover": false
   },
   {
     "id": "dsc04940-b441249b",
@@ -478,7 +522,9 @@ window.ZY_PHOTOS = [
     "orientation": "landscape",
     "color": "#637188",
     "featured": false,
-    "cameraMeta": "3711 x 2087"
+    "cameraMeta": "3711 x 2087",
+    "homepageOrder": 0,
+    "colorCover": false
   },
   {
     "id": "dsc05308-3-f20652a2",
@@ -491,7 +537,9 @@ window.ZY_PHOTOS = [
     "orientation": "landscape",
     "color": "#798c59",
     "featured": false,
-    "cameraMeta": "8867 x 4988"
+    "cameraMeta": "8867 x 4988",
+    "homepageOrder": 0,
+    "colorCover": false
   },
   {
     "id": "dsc05439-968bab42",
@@ -504,7 +552,9 @@ window.ZY_PHOTOS = [
     "orientation": "landscape",
     "color": "#9e8b87",
     "featured": false,
-    "cameraMeta": "6884 x 3872"
+    "cameraMeta": "6884 x 3872",
+    "homepageOrder": 0,
+    "colorCover": false
   },
   {
     "id": "dsc05452-612b9856",
@@ -517,7 +567,9 @@ window.ZY_PHOTOS = [
     "orientation": "portrait",
     "color": "#657789",
     "featured": false,
-    "cameraMeta": "4160 x 6240"
+    "cameraMeta": "4160 x 6240",
+    "homepageOrder": 0,
+    "colorCover": false
   },
   {
     "id": "dsc05453-e31faafb",
@@ -530,7 +582,9 @@ window.ZY_PHOTOS = [
     "orientation": "landscape",
     "color": "#d6bf9f",
     "featured": false,
-    "cameraMeta": "6144 x 3456"
+    "cameraMeta": "6144 x 3456",
+    "homepageOrder": 0,
+    "colorCover": false
   },
   {
     "id": "dsc05529-120481eb",
@@ -543,6 +597,578 @@ window.ZY_PHOTOS = [
     "orientation": "landscape",
     "color": "#978c8a",
     "featured": false,
-    "cameraMeta": "8589 x 4831"
+    "cameraMeta": "8589 x 4831",
+    "homepageOrder": 0,
+    "colorCover": false
+  },
+  {
+    "id": "1105-4-f835c8ad",
+    "title": "1105_异木棉风光_中景4（摄影：许子逸）",
+    "series": "未分类",
+    "year": "2025",
+    "image": "assets/photos/1105-4-f835c8ad.jpg",
+    "thumb": "assets/photos/thumbs/1105-4-f835c8ad.jpg",
+    "alt": "1105_异木棉风光_中景4（摄影：许子逸） 的摄影作品",
+    "orientation": "landscape",
+    "color": "#89bdeb",
+    "featured": false,
+    "homepageOrder": 0,
+    "colorCover": false,
+    "cameraMeta": "9504 x 6336"
+  },
+  {
+    "id": "1105-2-93bfaf22",
+    "title": "1105_异木棉风光_花与亭子2（摄影：许子逸）",
+    "series": "未分类",
+    "year": "2025",
+    "image": "assets/photos/1105-2-93bfaf22.jpg",
+    "thumb": "assets/photos/thumbs/1105-2-93bfaf22.jpg",
+    "alt": "1105_异木棉风光_花与亭子2（摄影：许子逸） 的摄影作品",
+    "orientation": "landscape",
+    "color": "#ae8e6b",
+    "featured": false,
+    "homepageOrder": 0,
+    "colorCover": false,
+    "cameraMeta": "9299 x 6199"
+  },
+  {
+    "id": "1105-1-b58234cb",
+    "title": "1105_异木棉风光_花与篮球框1（摄影：许子逸）",
+    "series": "未分类",
+    "year": "2025",
+    "image": "assets/photos/1105-1-b58234cb.jpg",
+    "thumb": "assets/photos/thumbs/1105-1-b58234cb.jpg",
+    "alt": "1105_异木棉风光_花与篮球框1（摄影：许子逸） 的摄影作品",
+    "orientation": "portrait",
+    "color": "#989071",
+    "featured": false,
+    "homepageOrder": 0,
+    "colorCover": false,
+    "cameraMeta": "6336 x 9504"
+  },
+  {
+    "id": "1105-bf640181",
+    "title": "1105_异木棉风光_飞机（摄影：许子逸）",
+    "series": "未分类",
+    "year": "2025",
+    "image": "assets/photos/1105-bf640181.jpg",
+    "thumb": "assets/photos/thumbs/1105-bf640181.jpg",
+    "alt": "1105_异木棉风光_飞机（摄影：许子逸） 的摄影作品",
+    "orientation": "portrait",
+    "color": "#3da0ef",
+    "featured": false,
+    "homepageOrder": 0,
+    "colorCover": false,
+    "cameraMeta": "4224 x 6336"
+  },
+  {
+    "id": "1114-11-69920716",
+    "title": "1114_异木棉风光_仰拍11（摄影：许子逸）",
+    "series": "未分类",
+    "year": "2025",
+    "image": "assets/photos/1114-11-69920716.jpg",
+    "thumb": "assets/photos/thumbs/1114-11-69920716.jpg",
+    "alt": "1114_异木棉风光_仰拍11（摄影：许子逸） 的摄影作品",
+    "orientation": "landscape",
+    "color": "#669cb8",
+    "featured": false,
+    "homepageOrder": 0,
+    "colorCover": false,
+    "cameraMeta": "9504 x 6336"
+  },
+  {
+    "id": "1114-3-eba91875",
+    "title": "1114_异木棉风光_全景3（摄影：许子逸）",
+    "series": "未分类",
+    "year": "2025",
+    "image": "assets/photos/1114-3-eba91875.jpg",
+    "thumb": "assets/photos/thumbs/1114-3-eba91875.jpg",
+    "alt": "1114_异木棉风光_全景3（摄影：许子逸） 的摄影作品",
+    "orientation": "portrait",
+    "color": "#5ac6ff",
+    "featured": false,
+    "homepageOrder": 0,
+    "colorCover": false,
+    "cameraMeta": "6336 x 9504"
+  },
+  {
+    "id": "1114-7-fde49ae2",
+    "title": "1114_异木棉风光_全景7（摄影：许子逸）",
+    "series": "未分类",
+    "year": "2025",
+    "image": "assets/photos/1114-7-fde49ae2.jpg",
+    "thumb": "assets/photos/thumbs/1114-7-fde49ae2.jpg",
+    "alt": "1114_异木棉风光_全景7（摄影：许子逸） 的摄影作品",
+    "orientation": "landscape",
+    "color": "#74b7f7",
+    "featured": false,
+    "homepageOrder": 0,
+    "colorCover": false,
+    "cameraMeta": "9504 x 6336"
+  },
+  {
+    "id": "capture-one-catalog6887-590b6118",
+    "title": "Capture One Catalog6887",
+    "series": "未分类",
+    "year": "2025",
+    "image": "assets/photos/capture-one-catalog6887-590b6118.jpg",
+    "thumb": "assets/photos/thumbs/capture-one-catalog6887-590b6118.jpg",
+    "alt": "Capture One Catalog6887 的摄影作品",
+    "orientation": "landscape",
+    "color": "#707070",
+    "featured": false,
+    "homepageOrder": 0,
+    "colorCover": false,
+    "cameraMeta": "6318 x 5785"
+  },
+  {
+    "id": "capture-one-catalog6891-9019698c",
+    "title": "Capture One Catalog6891",
+    "series": "未分类",
+    "year": "2025",
+    "image": "assets/photos/capture-one-catalog6891-9019698c.jpg",
+    "thumb": "assets/photos/thumbs/capture-one-catalog6891-9019698c.jpg",
+    "alt": "Capture One Catalog6891 的摄影作品",
+    "orientation": "landscape",
+    "color": "#646464",
+    "featured": false,
+    "homepageOrder": 0,
+    "colorCover": false,
+    "cameraMeta": "6318 x 5785"
+  },
+  {
+    "id": "capture-one-catalog6898-fc8db576",
+    "title": "Capture One Catalog6898",
+    "series": "未分类",
+    "year": "2025",
+    "image": "assets/photos/capture-one-catalog6898-fc8db576.jpg",
+    "thumb": "assets/photos/thumbs/capture-one-catalog6898-fc8db576.jpg",
+    "alt": "Capture One Catalog6898 的摄影作品",
+    "orientation": "landscape",
+    "color": "#7f7f7f",
+    "featured": false,
+    "homepageOrder": 0,
+    "colorCover": false,
+    "cameraMeta": "6318 x 5785"
+  },
+  {
+    "id": "capture-one-catalog6905-dd501d68",
+    "title": "Capture One Catalog6905",
+    "series": "未分类",
+    "year": "2025",
+    "image": "assets/photos/capture-one-catalog6905-dd501d68.jpg",
+    "thumb": "assets/photos/thumbs/capture-one-catalog6905-dd501d68.jpg",
+    "alt": "Capture One Catalog6905 的摄影作品",
+    "orientation": "landscape",
+    "color": "#5b5b5b",
+    "featured": false,
+    "homepageOrder": 0,
+    "colorCover": false,
+    "cameraMeta": "6318 x 5785"
+  },
+  {
+    "id": "capture-one-catalog6912-4dbf3df5",
+    "title": "Capture One Catalog6912",
+    "series": "未分类",
+    "year": "2025",
+    "image": "assets/photos/capture-one-catalog6912-4dbf3df5.jpg",
+    "thumb": "assets/photos/thumbs/capture-one-catalog6912-4dbf3df5.jpg",
+    "alt": "Capture One Catalog6912 的摄影作品",
+    "orientation": "landscape",
+    "color": "#cdcdcd",
+    "featured": false,
+    "homepageOrder": 0,
+    "colorCover": false,
+    "cameraMeta": "6318 x 5814"
+  },
+  {
+    "id": "capture-one-catalog6915-477d4730",
+    "title": "Capture One Catalog6915",
+    "series": "未分类",
+    "year": "2025",
+    "image": "assets/photos/capture-one-catalog6915-477d4730.jpg",
+    "thumb": "assets/photos/thumbs/capture-one-catalog6915-477d4730.jpg",
+    "alt": "Capture One Catalog6915 的摄影作品",
+    "orientation": "landscape",
+    "color": "#707070",
+    "featured": false,
+    "homepageOrder": 0,
+    "colorCover": false,
+    "cameraMeta": "6318 x 5814"
+  },
+  {
+    "id": "capture-one-catalog6923-a91c96b4",
+    "title": "Capture One Catalog6923",
+    "series": "未分类",
+    "year": "2025",
+    "image": "assets/photos/capture-one-catalog6923-a91c96b4.jpg",
+    "thumb": "assets/photos/thumbs/capture-one-catalog6923-a91c96b4.jpg",
+    "alt": "Capture One Catalog6923 的摄影作品",
+    "orientation": "portrait",
+    "color": "#8c8c8c",
+    "featured": false,
+    "homepageOrder": 0,
+    "colorCover": false,
+    "cameraMeta": "5797 x 6324"
+  },
+  {
+    "id": "capture-one-catalog5212-879ee69f",
+    "title": "Capture One Catalog5212",
+    "series": "未分类",
+    "year": "2025",
+    "image": "assets/photos/capture-one-catalog5212-879ee69f.jpg",
+    "thumb": "assets/photos/thumbs/capture-one-catalog5212-879ee69f.jpg",
+    "alt": "Capture One Catalog5212 的摄影作品",
+    "orientation": "portrait",
+    "color": "#0d82e4",
+    "featured": false,
+    "homepageOrder": 0,
+    "colorCover": false,
+    "cameraMeta": "6039 x 6557"
+  },
+  {
+    "id": "capture-one-catalog5233-82c78660",
+    "title": "Capture One Catalog5233",
+    "series": "未分类",
+    "year": "2025",
+    "image": "assets/photos/capture-one-catalog5233-82c78660.jpg",
+    "thumb": "assets/photos/thumbs/capture-one-catalog5233-82c78660.jpg",
+    "alt": "Capture One Catalog5233 的摄影作品",
+    "orientation": "landscape",
+    "color": "#8f6c66",
+    "featured": false,
+    "homepageOrder": 0,
+    "colorCover": false,
+    "cameraMeta": "6566 x 6047"
+  },
+  {
+    "id": "capture-one-catalog5237-9d67ba0b",
+    "title": "Capture One Catalog5237",
+    "series": "未分类",
+    "year": "2025",
+    "image": "assets/photos/capture-one-catalog5237-9d67ba0b.jpg",
+    "thumb": "assets/photos/thumbs/capture-one-catalog5237-9d67ba0b.jpg",
+    "alt": "Capture One Catalog5237 的摄影作品",
+    "orientation": "portrait",
+    "color": "#308fe7",
+    "featured": false,
+    "homepageOrder": 0,
+    "colorCover": false,
+    "cameraMeta": "6047 x 6566"
+  },
+  {
+    "id": "capture-one-catalog5238-9c686fb4",
+    "title": "Capture One Catalog5238",
+    "series": "未分类",
+    "year": "2025",
+    "image": "assets/photos/capture-one-catalog5238-9c686fb4.jpg",
+    "thumb": "assets/photos/thumbs/capture-one-catalog5238-9c686fb4.jpg",
+    "alt": "Capture One Catalog5238 的摄影作品",
+    "orientation": "portrait",
+    "color": "#0cb0fd",
+    "featured": false,
+    "homepageOrder": 0,
+    "colorCover": false,
+    "cameraMeta": "6047 x 6566"
+  },
+  {
+    "id": "capture-one-catalog5245-66b1ab48",
+    "title": "Capture One Catalog5245",
+    "series": "未分类",
+    "year": "2025",
+    "image": "assets/photos/capture-one-catalog5245-66b1ab48.jpg",
+    "thumb": "assets/photos/thumbs/capture-one-catalog5245-66b1ab48.jpg",
+    "alt": "Capture One Catalog5245 的摄影作品",
+    "orientation": "landscape",
+    "color": "#039df4",
+    "featured": false,
+    "homepageOrder": 0,
+    "colorCover": false,
+    "cameraMeta": "6566 x 6047"
+  },
+  {
+    "id": "capture-one-catalog5516-0fafa5d8",
+    "title": "Capture One Catalog5516",
+    "series": "未分类",
+    "year": "2025",
+    "image": "assets/photos/capture-one-catalog5516-0fafa5d8.jpg",
+    "thumb": "assets/photos/thumbs/capture-one-catalog5516-0fafa5d8.jpg",
+    "alt": "Capture One Catalog5516 的摄影作品",
+    "orientation": "landscape",
+    "color": "#3477ac",
+    "featured": false,
+    "homepageOrder": 0,
+    "colorCover": false,
+    "cameraMeta": "6207 x 5742"
+  },
+  {
+    "id": "dsc05749-70e3b411",
+    "title": "DSC05749",
+    "series": "未分类",
+    "year": "2025",
+    "image": "assets/photos/dsc05749-70e3b411.jpg",
+    "thumb": "assets/photos/thumbs/dsc05749-70e3b411.jpg",
+    "alt": "DSC05749 的摄影作品",
+    "orientation": "portrait",
+    "color": "#959595",
+    "featured": false,
+    "homepageOrder": 0,
+    "colorCover": false,
+    "cameraMeta": "5547 x 8320"
+  },
+  {
+    "id": "dsc05768-2-7a466389",
+    "title": "DSC05768-2",
+    "series": "未分类",
+    "year": "2025",
+    "image": "assets/photos/dsc05768-2-7a466389.jpg",
+    "thumb": "assets/photos/thumbs/dsc05768-2-7a466389.jpg",
+    "alt": "DSC05768-2 的摄影作品",
+    "orientation": "portrait",
+    "color": "#748794",
+    "featured": false,
+    "homepageOrder": 0,
+    "colorCover": false,
+    "cameraMeta": "3927 x 4909"
+  },
+  {
+    "id": "dsc05951-4adce039",
+    "title": "DSC05951",
+    "series": "未分类",
+    "year": "2025",
+    "image": "assets/photos/dsc05951-4adce039.jpg",
+    "thumb": "assets/photos/thumbs/dsc05951-4adce039.jpg",
+    "alt": "DSC05951 的摄影作品",
+    "orientation": "landscape",
+    "color": "#766451",
+    "featured": false,
+    "homepageOrder": 0,
+    "colorCover": false,
+    "cameraMeta": "8448 x 4752"
+  },
+  {
+    "id": "dsc06037-9e4d8533",
+    "title": "DSC06037-已增强-降噪",
+    "series": "未分类",
+    "year": "2025",
+    "image": "assets/photos/dsc06037-9e4d8533.jpg",
+    "thumb": "assets/photos/thumbs/dsc06037-9e4d8533.jpg",
+    "alt": "DSC06037-已增强-降噪 的摄影作品",
+    "orientation": "landscape",
+    "color": "#9f9c88",
+    "featured": false,
+    "homepageOrder": 0,
+    "colorCover": false,
+    "cameraMeta": "8557 x 4813"
+  },
+  {
+    "id": "dsc06670-183f7743",
+    "title": "DSC06670",
+    "series": "未分类",
+    "year": "2025",
+    "image": "assets/photos/dsc06670-183f7743.jpg",
+    "thumb": "assets/photos/thumbs/dsc06670-183f7743.jpg",
+    "alt": "DSC06670 的摄影作品",
+    "orientation": "panorama",
+    "color": "#72b1e7",
+    "featured": false,
+    "homepageOrder": 0,
+    "colorCover": false,
+    "cameraMeta": "7885 x 3355"
+  },
+  {
+    "id": "dsc06686-24bit-g2p0015-ca5a2d8b",
+    "title": "DSC06686_24Bit_g2p0015",
+    "series": "未分类",
+    "year": "2025",
+    "image": "assets/photos/dsc06686-24bit-g2p0015-ca5a2d8b.jpg",
+    "thumb": "assets/photos/thumbs/dsc06686-24bit-g2p0015-ca5a2d8b.jpg",
+    "alt": "DSC06686_24Bit_g2p0015 的摄影作品",
+    "orientation": "portrait",
+    "color": "#894524",
+    "featured": false,
+    "homepageOrder": 0,
+    "colorCover": false,
+    "cameraMeta": "4250 x 6246"
+  },
+  {
+    "id": "dsc07002-12-ba12e440",
+    "title": "DSC07002-编辑-12",
+    "series": "未分类",
+    "year": "2025",
+    "image": "assets/photos/dsc07002-12-ba12e440.jpg",
+    "thumb": "assets/photos/thumbs/dsc07002-12-ba12e440.jpg",
+    "alt": "DSC07002-编辑-12 的摄影作品",
+    "orientation": "landscape",
+    "color": "#79674c",
+    "featured": false,
+    "homepageOrder": 0,
+    "colorCover": false,
+    "cameraMeta": "3927 x 2618"
+  },
+  {
+    "id": "dsc07434-1a8f2a3d",
+    "title": "DSC07434",
+    "series": "未分类",
+    "year": "2025",
+    "image": "assets/photos/dsc07434-1a8f2a3d.jpg",
+    "thumb": "assets/photos/thumbs/dsc07434-1a8f2a3d.jpg",
+    "alt": "DSC07434 的摄影作品",
+    "orientation": "portrait",
+    "color": "#825a45",
+    "featured": false,
+    "homepageOrder": 0,
+    "colorCover": false,
+    "cameraMeta": "5243 x 7865"
+  },
+  {
+    "id": "dsc08022-24bit-g2p0038-a81aa16a",
+    "title": "DSC08022_24Bit_g2p0038",
+    "series": "未分类",
+    "year": "2025",
+    "image": "assets/photos/dsc08022-24bit-g2p0038-a81aa16a.jpg",
+    "thumb": "assets/photos/thumbs/dsc08022-24bit-g2p0038-a81aa16a.jpg",
+    "alt": "DSC08022_24Bit_g2p0038 的摄影作品",
+    "orientation": "portrait",
+    "color": "#51a2d8",
+    "featured": false,
+    "homepageOrder": 0,
+    "colorCover": false,
+    "cameraMeta": "4417 x 6574"
+  },
+  {
+    "id": "dsc08430-434cd384",
+    "title": "DSC08430",
+    "series": "未分类",
+    "year": "2025",
+    "image": "assets/photos/dsc08430-434cd384.jpg",
+    "thumb": "assets/photos/thumbs/dsc08430-434cd384.jpg",
+    "alt": "DSC08430 的摄影作品",
+    "orientation": "landscape",
+    "color": "#b7dbf1",
+    "featured": false,
+    "homepageOrder": 0,
+    "colorCover": false,
+    "cameraMeta": "6171 x 4114"
+  },
+  {
+    "id": "dsc08694-2-04fe6400",
+    "title": "DSC08694-2",
+    "series": "未分类",
+    "year": "2025",
+    "image": "assets/photos/dsc08694-2-04fe6400.jpg",
+    "thumb": "assets/photos/thumbs/dsc08694-2-04fe6400.jpg",
+    "alt": "DSC08694-2 的摄影作品",
+    "orientation": "landscape",
+    "color": "#a59c9c",
+    "featured": false,
+    "homepageOrder": 0,
+    "colorCover": false,
+    "cameraMeta": "3335 x 2223"
+  },
+  {
+    "id": "dsc09227-09fd143e",
+    "title": "DSC09227",
+    "series": "未分类",
+    "year": "2025",
+    "image": "assets/photos/dsc09227-09fd143e.jpg",
+    "thumb": "assets/photos/thumbs/dsc09227-09fd143e.jpg",
+    "alt": "DSC09227 的摄影作品",
+    "orientation": "portrait",
+    "color": "#858b38",
+    "featured": false,
+    "homepageOrder": 0,
+    "colorCover": false,
+    "cameraMeta": "5092 x 7638"
+  },
+  {
+    "id": "dsc09281-085a2ece",
+    "title": "DSC09281",
+    "series": "未分类",
+    "year": "2025",
+    "image": "assets/photos/dsc09281-085a2ece.jpg",
+    "thumb": "assets/photos/thumbs/dsc09281-085a2ece.jpg",
+    "alt": "DSC09281 的摄影作品",
+    "orientation": "square",
+    "color": "#bdb892",
+    "featured": false,
+    "homepageOrder": 0,
+    "colorCover": false,
+    "cameraMeta": "2272 x 2272"
+  },
+  {
+    "id": "dsc09495-2-63d89693",
+    "title": "DSC09495-2",
+    "series": "未分类",
+    "year": "2025",
+    "image": "assets/photos/dsc09495-2-63d89693.jpg",
+    "thumb": "assets/photos/thumbs/dsc09495-2-63d89693.jpg",
+    "alt": "DSC09495-2 的摄影作品",
+    "orientation": "square",
+    "color": "#af8376",
+    "featured": false,
+    "homepageOrder": 0,
+    "colorCover": false,
+    "cameraMeta": "3865 x 3865"
+  },
+  {
+    "id": "dsc09516-df37eab4",
+    "title": "DSC09516",
+    "series": "未分类",
+    "year": "2025",
+    "image": "assets/photos/dsc09516-df37eab4.jpg",
+    "thumb": "assets/photos/thumbs/dsc09516-df37eab4.jpg",
+    "alt": "DSC09516 的摄影作品",
+    "orientation": "portrait",
+    "color": "#b69c92",
+    "featured": false,
+    "homepageOrder": 0,
+    "colorCover": false,
+    "cameraMeta": "4160 x 6240"
+  },
+  {
+    "id": "dsc09592-e83de858",
+    "title": "DSC09592",
+    "series": "未分类",
+    "year": "2025",
+    "image": "assets/photos/dsc09592-e83de858.jpg",
+    "thumb": "assets/photos/thumbs/dsc09592-e83de858.jpg",
+    "alt": "DSC09592 的摄影作品",
+    "orientation": "square",
+    "color": "#a99f9e",
+    "featured": false,
+    "homepageOrder": 0,
+    "colorCover": false,
+    "cameraMeta": "5079 x 5079"
+  },
+  {
+    "id": "dsc-2817-a5787833",
+    "title": "DSC_2817",
+    "series": "未分类",
+    "year": "2025",
+    "image": "assets/photos/dsc-2817-a5787833.jpg",
+    "thumb": "assets/photos/thumbs/dsc-2817-a5787833.jpg",
+    "alt": "DSC_2817 的摄影作品",
+    "orientation": "landscape",
+    "color": "#b5cdfc",
+    "featured": false,
+    "homepageOrder": 0,
+    "colorCover": false,
+    "cameraMeta": "5749 x 5303"
+  },
+  {
+    "id": "dsc-2864-24bit-g2p0023-643b2a6b",
+    "title": "DSC_2864_24Bit_g2p0023",
+    "series": "未分类",
+    "year": "2025",
+    "image": "assets/photos/dsc-2864-24bit-g2p0023-643b2a6b.jpg",
+    "thumb": "assets/photos/thumbs/dsc-2864-24bit-g2p0023-643b2a6b.jpg",
+    "alt": "DSC_2864_24Bit_g2p0023 的摄影作品",
+    "orientation": "portrait",
+    "color": "#90816d",
+    "featured": false,
+    "homepageOrder": 0,
+    "colorCover": false,
+    "cameraMeta": "3872 x 5741"
   }
 ];
