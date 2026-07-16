@@ -178,9 +178,9 @@ HTML = r"""<!doctype html>
     }
 
     .folder-name {
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
+      overflow-wrap: anywhere;
+      line-height: 1.35;
+      white-space: normal;
       font-weight: 650;
     }
 
