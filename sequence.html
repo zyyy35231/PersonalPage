@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="color-scheme" content="dark" />
-  <title>Zy / Chromatic Sequence</title>
+  <title>Zy's DarkRoom</title>
   <style>
     :root {
       --tone: #8c8680;
@@ -106,6 +106,7 @@
       font-weight: 600;
       letter-spacing: 0;
       text-decoration: none;
+      white-space: nowrap;
     }
 
     .counter {
@@ -284,6 +285,8 @@
       display: grid;
       grid-template-rows: repeat(var(--count), 1fr);
       gap: 0;
+      cursor: ns-resize;
+      touch-action: none;
     }
 
     .tone-button {
@@ -520,6 +523,8 @@
         padding-inline: 16px;
       }
 
+      .brand { font-size: 12px; }
+
       .viewer {
         inset: 58px 16px 94px;
       }
@@ -549,6 +554,7 @@
         display: grid;
         grid-template-columns: repeat(var(--count), 1fr);
         grid-template-rows: 1fr;
+        cursor: ew-resize;
       }
 
       .tone-button {
@@ -616,10 +622,10 @@
   </style>
 </head>
 <body>
-  <div class="loading" id="loading">ZY / 00</div>
+  <div class="loading" id="loading">Zy's DarkRoom / 00</div>
 
   <header class="topbar">
-    <a class="brand" href="index.html" aria-label="返回现有主站">ZY</a>
+    <a class="brand" href="index.html" aria-label="返回现有主站">Zy's DarkRoom</a>
     <div class="counter" aria-live="polite">
       <span id="currentCount">01</span> / <span id="totalCount">00</span>
     </div>
@@ -647,7 +653,7 @@
 
   <section class="index-panel" id="indexPanel" aria-hidden="true">
     <header class="index-header">
-      <strong>ZY</strong>
+      <strong>Zy's DarkRoom</strong>
       <span id="indexCount">00 FRAMES</span>
       <button class="index-close" id="indexClose" type="button" title="关闭索引" aria-label="关闭索引">&#215;</button>
     </header>
@@ -674,6 +680,10 @@
       let wheelUnlockAt = 0;
       let touchStartX = 0;
       let touchStartY = 0;
+      let touchStartedOnPalette = false;
+      let paletteDragging = false;
+      let paletteFrame = null;
+      let queuedPaletteIndex = -1;
       let changeTimer = null;
 
       const loading = document.getElementById("loading");
@@ -777,6 +787,45 @@
         });
       }
 
+      function paletteIndexFromPointer(event) {
+        const bounds = paletteTrack.getBoundingClientRect();
+        const horizontal = window.matchMedia("(max-width: 700px)").matches;
+        const length = horizontal ? bounds.width : bounds.height;
+        const position = horizontal ? event.clientX - bounds.left : event.clientY - bounds.top;
+        const ratio = Math.min(0.999999, Math.max(0, position / length));
+        return Math.floor(ratio * count);
+      }
+
+      function queuePaletteSelection(index) {
+        queuedPaletteIndex = index;
+        if (paletteFrame !== null) return;
+        paletteFrame = requestAnimationFrame(() => {
+          paletteFrame = null;
+          if (queuedPaletteIndex !== activeIndex) showPhoto(queuedPaletteIndex, true);
+        });
+      }
+
+      function scrubPalette(event) {
+        const hoverPointer = event.pointerType === "mouse" || event.pointerType === "pen";
+        if ((!hoverPointer && !paletteDragging) || !count) return;
+        if (indexPanel.classList.contains("is-open") || zoomLayer.classList.contains("is-open")) return;
+        event.preventDefault();
+        queuePaletteSelection(paletteIndexFromPointer(event));
+      }
+
+      function beginPaletteDrag(event) {
+        paletteDragging = true;
+        paletteTrack.setPointerCapture?.(event.pointerId);
+        scrubPalette(event);
+      }
+
+      function endPaletteDrag(event) {
+        paletteDragging = false;
+        if (paletteTrack.hasPointerCapture?.(event.pointerId)) {
+          paletteTrack.releasePointerCapture(event.pointerId);
+        }
+      }
+
       function showPhoto(index, immediate = false) {
         if (!count) return;
         const nextIndex = (index + count) % count;
@@ -876,8 +925,13 @@
 
       paletteTrack.addEventListener("click", (event) => {
         const button = event.target.closest("[data-index]");
-        if (button) showPhoto(Number(button.dataset.index));
+        const index = button ? Number(button.dataset.index) : paletteIndexFromPointer(event);
+        if (index !== activeIndex) showPhoto(index);
       });
+      paletteTrack.addEventListener("pointermove", scrubPalette);
+      paletteTrack.addEventListener("pointerdown", beginPaletteDrag);
+      paletteTrack.addEventListener("pointerup", endPaletteDrag);
+      paletteTrack.addEventListener("pointercancel", endPaletteDrag);
 
       contactSheet.addEventListener("click", (event) => {
         const button = event.target.closest("[data-index]");
@@ -927,11 +981,17 @@
       }, { passive: false });
 
       stage.addEventListener("touchstart", (event) => {
+        touchStartedOnPalette = Boolean(event.target.closest(".palette-track"));
+        if (touchStartedOnPalette) return;
         touchStartX = event.touches[0].clientX;
         touchStartY = event.touches[0].clientY;
       }, { passive: true });
 
       stage.addEventListener("touchend", (event) => {
+        if (touchStartedOnPalette) {
+          touchStartedOnPalette = false;
+          return;
+        }
         const deltaX = event.changedTouches[0].clientX - touchStartX;
         const deltaY = event.changedTouches[0].clientY - touchStartY;
         const distance = Math.abs(deltaX) > Math.abs(deltaY) ? deltaX : deltaY;
