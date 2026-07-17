@@ -1,0 +1,950 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="color-scheme" content="dark" />
+  <title>Zy / Chromatic Sequence</title>
+  <style>
+    :root {
+      --tone: #8c8680;
+      --ink: #f5f2ec;
+      --muted: rgba(245, 242, 236, 0.56);
+      --line: rgba(245, 242, 236, 0.18);
+      --stage-bg: color-mix(in srgb, var(--tone) 27%, #0b0b0c);
+      --font: "Helvetica Neue", "PingFang SC", "Noto Sans CJK SC", Arial, sans-serif;
+      --mono: "SFMono-Regular", "Roboto Mono", Menlo, Consolas, monospace;
+    }
+
+    * { box-sizing: border-box; }
+
+    html,
+    body {
+      width: 100%;
+      min-height: 100%;
+      margin: 0;
+      overflow: hidden;
+    }
+
+    body {
+      background: #0b0b0c;
+      color: var(--ink);
+      font-family: var(--font);
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+    }
+
+    button,
+    a {
+      color: inherit;
+      font: inherit;
+    }
+
+    button { cursor: pointer; }
+    img { display: block; max-width: 100%; }
+
+    .stage {
+      position: relative;
+      width: 100%;
+      height: 100svh;
+      min-height: 560px;
+      overflow: hidden;
+      background: var(--stage-bg);
+      transition: background-color 850ms cubic-bezier(0.2, 0.75, 0.25, 1);
+      isolation: isolate;
+    }
+
+    .stage::before {
+      content: attr(data-number);
+      position: absolute;
+      right: clamp(46px, 7vw, 108px);
+      bottom: -0.18em;
+      z-index: -1;
+      color: rgba(255, 255, 255, 0.055);
+      font-family: var(--mono);
+      font-size: clamp(190px, 34vw, 520px);
+      font-weight: 600;
+      line-height: 0.8;
+      letter-spacing: 0;
+      pointer-events: none;
+      user-select: none;
+    }
+
+    .stage::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      z-index: -2;
+      opacity: 0.3;
+      background:
+        linear-gradient(90deg, rgba(0, 0, 0, 0.28), transparent 28%, transparent 72%, rgba(0, 0, 0, 0.2)),
+        radial-gradient(circle at 50% 42%, color-mix(in srgb, var(--tone) 24%, transparent), transparent 62%);
+      transition: background 850ms ease;
+      pointer-events: none;
+    }
+
+    .topbar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 30;
+      height: 68px;
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      align-items: center;
+      padding: 0 clamp(18px, 3vw, 46px);
+      border-bottom: 1px solid var(--line);
+      mix-blend-mode: difference;
+    }
+
+    .brand {
+      justify-self: start;
+      color: #fff;
+      font-family: var(--mono);
+      font-size: 15px;
+      font-weight: 600;
+      letter-spacing: 0;
+      text-decoration: none;
+    }
+
+    .counter {
+      justify-self: center;
+      color: #fff;
+      font-family: var(--mono);
+      font-size: 12px;
+      font-variant-numeric: tabular-nums;
+      letter-spacing: 0;
+    }
+
+    .index-toggle {
+      justify-self: end;
+      min-height: 40px;
+      border: 0;
+      padding: 0;
+      background: transparent;
+      color: #fff;
+      font-family: var(--mono);
+      font-size: 11px;
+      letter-spacing: 0;
+    }
+
+    .index-toggle::after {
+      content: "";
+      display: block;
+      width: 100%;
+      height: 1px;
+      margin-top: 5px;
+      background: currentColor;
+      transform: scaleX(0);
+      transform-origin: right;
+      transition: transform 220ms ease;
+    }
+
+    .index-toggle:hover::after,
+    .index-toggle:focus-visible::after {
+      transform: scaleX(1);
+      transform-origin: left;
+    }
+
+    .viewer {
+      position: absolute;
+      inset: 68px clamp(54px, 8vw, 128px) 74px clamp(18px, 6vw, 92px);
+      display: grid;
+      place-items: center;
+    }
+
+    .photo-frame {
+      position: relative;
+      display: grid;
+      place-items: center;
+      width: min(76vw, 1160px);
+      height: min(73vh, 760px);
+      margin: 0;
+      transition:
+        width 620ms cubic-bezier(0.2, 0.75, 0.25, 1),
+        height 620ms cubic-bezier(0.2, 0.75, 0.25, 1),
+        transform 620ms cubic-bezier(0.2, 0.75, 0.25, 1);
+    }
+
+    .stage[data-orientation="portrait"] .photo-frame {
+      width: min(45vw, 630px);
+      height: min(77vh, 810px);
+      transform: translateX(-5vw);
+    }
+
+    .stage[data-orientation="square"] .photo-frame {
+      width: min(66vw, 760px);
+      height: min(72vh, 760px);
+      transform: translateX(-2vw);
+    }
+
+    .stage[data-orientation="panorama"] .photo-frame {
+      width: min(86vw, 1380px);
+      height: min(58vh, 600px);
+      transform: translateY(-1vh);
+    }
+
+    .photo-button {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      display: grid;
+      place-items: center;
+      border: 0;
+      padding: 0;
+      background: transparent;
+    }
+
+    .photo-button::after {
+      content: "";
+      position: absolute;
+      inset: -12px;
+      border: 1px solid transparent;
+      transition: border-color 220ms ease;
+      pointer-events: none;
+    }
+
+    .photo-button:focus-visible { outline: none; }
+    .photo-button:focus-visible::after { border-color: rgba(255, 255, 255, 0.62); }
+
+    .stage-image {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      opacity: 1;
+      filter: saturate(0.98) contrast(1.01);
+      transition: opacity 320ms ease, transform 700ms cubic-bezier(0.2, 0.75, 0.25, 1);
+      transform: scale(1);
+      user-select: none;
+      -webkit-user-drag: none;
+    }
+
+    .stage.is-changing .stage-image {
+      opacity: 0;
+      transform: scale(0.985);
+    }
+
+    .metadata {
+      position: fixed;
+      left: clamp(18px, 3vw, 46px);
+      bottom: 21px;
+      z-index: 20;
+      display: flex;
+      align-items: baseline;
+      gap: 16px;
+      color: var(--ink);
+      font-family: var(--mono);
+      font-size: 10px;
+      font-variant-numeric: tabular-nums;
+      letter-spacing: 0;
+    }
+
+    .metadata span + span::before {
+      content: "/";
+      margin-right: 16px;
+      color: var(--muted);
+    }
+
+    .step-button {
+      position: fixed;
+      bottom: 12px;
+      z-index: 25;
+      width: 44px;
+      height: 44px;
+      border: 1px solid var(--line);
+      border-radius: 50%;
+      background: rgba(0, 0, 0, 0.12);
+      color: var(--ink);
+      font-family: var(--mono);
+      font-size: 18px;
+      line-height: 1;
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      transition: background-color 180ms ease, transform 180ms ease;
+    }
+
+    .step-button:hover,
+    .step-button:focus-visible {
+      background: rgba(255, 255, 255, 0.12);
+      outline: none;
+      transform: scale(1.06);
+    }
+
+    .step-button.prev { right: 76px; }
+    .step-button.next { right: 20px; }
+
+    .palette-track {
+      position: fixed;
+      top: 17.5vh;
+      right: 18px;
+      z-index: 24;
+      width: 32px;
+      height: 65vh;
+      display: grid;
+      grid-template-rows: repeat(var(--count), 1fr);
+      gap: 0;
+    }
+
+    .tone-button {
+      justify-self: end;
+      width: 12px;
+      min-height: 1px;
+      border: 0;
+      padding: 0;
+      background: var(--swatch);
+      box-shadow: inset 0 0 0 0.5px rgba(255, 255, 255, 0.16);
+      transition: width 180ms ease, filter 180ms ease;
+    }
+
+    .tone-button:hover,
+    .tone-button:focus-visible,
+    .tone-button.is-active {
+      width: 32px;
+      filter: brightness(1.18) saturate(1.12);
+      outline: none;
+    }
+
+    .tone-button.is-active { box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.72); }
+
+    .index-panel {
+      position: fixed;
+      inset: 0;
+      z-index: 80;
+      display: grid;
+      grid-template-rows: 72px minmax(0, 1fr);
+      background: #efede7;
+      color: #141311;
+      visibility: hidden;
+      transform: translateY(100%);
+      transition:
+        transform 620ms cubic-bezier(0.76, 0, 0.24, 1),
+        visibility 0s linear 620ms;
+    }
+
+    .index-panel.is-open {
+      visibility: visible;
+      transform: translateY(0);
+      transition-delay: 0s;
+    }
+
+    .index-header {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      align-items: center;
+      padding: 0 clamp(18px, 3vw, 46px);
+      border-bottom: 1px solid rgba(20, 19, 17, 0.16);
+      font-family: var(--mono);
+      font-size: 11px;
+    }
+
+    .index-header strong {
+      justify-self: start;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .index-header span {
+      justify-self: center;
+      color: rgba(20, 19, 17, 0.56);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .index-close {
+      justify-self: end;
+      width: 42px;
+      height: 42px;
+      border: 0;
+      padding: 0;
+      background: transparent;
+      color: #141311;
+      font-family: var(--mono);
+      font-size: 21px;
+      line-height: 1;
+    }
+
+    .index-close:hover,
+    .index-close:focus-visible {
+      outline: 1px solid rgba(20, 19, 17, 0.36);
+      outline-offset: -6px;
+    }
+
+    .contact-sheet {
+      overflow-y: auto;
+      overscroll-behavior: contain;
+      display: grid;
+      grid-template-columns: repeat(8, minmax(0, 1fr));
+      grid-auto-rows: 12.5vw;
+      align-content: start;
+      gap: 1px;
+      padding: 1px;
+      background: rgba(20, 19, 17, 0.14);
+    }
+
+    .contact-item {
+      position: relative;
+      min-width: 0;
+      min-height: 0;
+      display: grid;
+      place-items: center;
+      border: 0;
+      padding: 13px;
+      overflow: hidden;
+      background: color-mix(in srgb, var(--swatch) 11%, #efede7);
+    }
+
+    .contact-item img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      filter: saturate(0.88);
+      transition: transform 260ms ease, filter 260ms ease;
+    }
+
+    .contact-item::before {
+      content: attr(data-number);
+      position: absolute;
+      top: 7px;
+      left: 8px;
+      z-index: 2;
+      color: #141311;
+      font-family: var(--mono);
+      font-size: 9px;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .contact-item::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      height: 4px;
+      background: var(--swatch);
+    }
+
+    .contact-item:hover img,
+    .contact-item:focus-visible img {
+      transform: scale(1.035);
+      filter: saturate(1);
+    }
+
+    .contact-item:focus-visible {
+      z-index: 2;
+      outline: 2px solid #141311;
+      outline-offset: -2px;
+    }
+
+    .zoom-layer {
+      position: fixed;
+      inset: 0;
+      z-index: 90;
+      display: grid;
+      place-items: center;
+      padding: 28px;
+      background: rgba(5, 5, 6, 0.96);
+      visibility: hidden;
+      opacity: 0;
+      transition: opacity 260ms ease, visibility 0s linear 260ms;
+    }
+
+    .zoom-layer.is-open {
+      visibility: visible;
+      opacity: 1;
+      transition-delay: 0s;
+    }
+
+    .zoom-image {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+
+    .zoom-close {
+      position: fixed;
+      top: 16px;
+      right: 16px;
+      z-index: 2;
+      width: 44px;
+      height: 44px;
+      border: 1px solid rgba(255, 255, 255, 0.28);
+      border-radius: 50%;
+      background: rgba(0, 0, 0, 0.24);
+      color: #fff;
+      font-size: 21px;
+      line-height: 1;
+    }
+
+    .zoom-meta {
+      position: fixed;
+      left: 20px;
+      bottom: 18px;
+      display: flex;
+      gap: 14px;
+      color: rgba(255, 255, 255, 0.72);
+      font-family: var(--mono);
+      font-size: 10px;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .loading {
+      position: fixed;
+      inset: 0;
+      z-index: 100;
+      display: grid;
+      place-items: center;
+      background: #0b0b0c;
+      color: rgba(255, 255, 255, 0.62);
+      font-family: var(--mono);
+      font-size: 11px;
+      transition: opacity 400ms ease, visibility 0s linear 400ms;
+    }
+
+    .loading.is-hidden {
+      visibility: hidden;
+      opacity: 0;
+    }
+
+    @media (max-width: 980px) {
+      .contact-sheet {
+        grid-template-columns: repeat(5, minmax(0, 1fr));
+        grid-auto-rows: 20vw;
+      }
+      .stage[data-orientation="portrait"] .photo-frame { transform: translateX(-2vw); }
+    }
+
+    @media (max-width: 700px) {
+      .stage { min-height: 480px; }
+      .topbar {
+        height: 58px;
+        padding-inline: 16px;
+      }
+
+      .viewer {
+        inset: 58px 16px 94px;
+      }
+
+      .photo-frame,
+      .stage[data-orientation="portrait"] .photo-frame,
+      .stage[data-orientation="square"] .photo-frame,
+      .stage[data-orientation="panorama"] .photo-frame {
+        width: 100%;
+        height: 100%;
+        transform: none;
+      }
+
+      .stage::before {
+        right: 12px;
+        bottom: 0;
+        font-size: clamp(150px, 58vw, 280px);
+      }
+
+      .palette-track {
+        top: auto;
+        right: 16px;
+        bottom: 74px;
+        left: 16px;
+        width: auto;
+        height: 14px;
+        display: grid;
+        grid-template-columns: repeat(var(--count), 1fr);
+        grid-template-rows: 1fr;
+      }
+
+      .tone-button {
+        align-self: end;
+        width: 100%;
+        height: 8px;
+        transition: height 180ms ease;
+      }
+
+      .tone-button:hover,
+      .tone-button:focus-visible,
+      .tone-button.is-active {
+        width: 100%;
+        height: 14px;
+      }
+
+      .metadata {
+        left: 16px;
+        bottom: 24px;
+        max-width: calc(100vw - 142px);
+        gap: 10px;
+        flex-wrap: wrap;
+      }
+
+      .metadata span + span::before {
+        margin-right: 10px;
+      }
+
+      .step-button {
+        bottom: 14px;
+        width: 42px;
+        height: 42px;
+      }
+
+      .step-button.prev { right: 64px; }
+      .step-button.next { right: 14px; }
+
+      .index-panel { grid-template-rows: 58px minmax(0, 1fr); }
+      .index-header { padding-inline: 16px; }
+      .contact-sheet {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        grid-auto-rows: 33.333vw;
+      }
+      .contact-item { padding: 9px; }
+      .zoom-layer { padding: 64px 12px 54px; }
+    }
+
+    @media (max-width: 420px) {
+      .contact-sheet {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        grid-auto-rows: 50vw;
+      }
+      .counter { justify-self: start; margin-left: 28px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        scroll-behavior: auto !important;
+        transition-duration: 0.01ms !important;
+        animation-duration: 0.01ms !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="loading" id="loading">ZY / 00</div>
+
+  <header class="topbar">
+    <a class="brand" href="index.html" aria-label="返回现有主站">ZY</a>
+    <div class="counter" aria-live="polite">
+      <span id="currentCount">01</span> / <span id="totalCount">00</span>
+    </div>
+    <button class="index-toggle" id="indexToggle" type="button" aria-controls="indexPanel" aria-expanded="false">INDEX</button>
+  </header>
+
+  <main class="stage" id="stage" data-number="01" data-orientation="landscape">
+    <div class="viewer">
+      <figure class="photo-frame">
+        <button class="photo-button" id="photoButton" type="button" aria-label="查看完整照片">
+          <img class="stage-image" id="stageImage" alt="" />
+        </button>
+      </figure>
+    </div>
+
+    <div class="metadata" id="metadata">
+      <span id="photoYear"></span>
+      <span id="photoMeta"></span>
+    </div>
+
+    <nav class="palette-track" id="paletteTrack" aria-label="色彩序列"></nav>
+    <button class="step-button prev" id="prevButton" type="button" title="上一张" aria-label="上一张">&#8592;</button>
+    <button class="step-button next" id="nextButton" type="button" title="下一张" aria-label="下一张">&#8594;</button>
+  </main>
+
+  <section class="index-panel" id="indexPanel" aria-hidden="true">
+    <header class="index-header">
+      <strong>ZY</strong>
+      <span id="indexCount">00 FRAMES</span>
+      <button class="index-close" id="indexClose" type="button" title="关闭索引" aria-label="关闭索引">&#215;</button>
+    </header>
+    <div class="contact-sheet" id="contactSheet"></div>
+  </section>
+
+  <div class="zoom-layer" id="zoomLayer" role="dialog" aria-modal="true" aria-label="完整照片" aria-hidden="true">
+    <button class="zoom-close" id="zoomClose" type="button" title="关闭完整照片" aria-label="关闭完整照片">&#215;</button>
+    <img class="zoom-image" id="zoomImage" alt="" />
+    <div class="zoom-meta">
+      <span id="zoomYear"></span>
+      <span id="zoomMeta"></span>
+    </div>
+  </div>
+
+  <script src="assets/photo-data.js"></script>
+  <script>
+    (() => {
+      const sourcePhotos = Array.isArray(window.ZY_PHOTOS) ? window.ZY_PHOTOS : [];
+      const photos = [...sourcePhotos].sort((a, b) => hueOf(a.color) - hueOf(b.color));
+      const count = photos.length;
+      let activeIndex = initialIndex();
+      let wheelLocked = false;
+      let wheelUnlockAt = 0;
+      let touchStartX = 0;
+      let touchStartY = 0;
+      let changeTimer = null;
+
+      const loading = document.getElementById("loading");
+      const stage = document.getElementById("stage");
+      const stageImage = document.getElementById("stageImage");
+      const photoButton = document.getElementById("photoButton");
+      const currentCount = document.getElementById("currentCount");
+      const totalCount = document.getElementById("totalCount");
+      const photoYear = document.getElementById("photoYear");
+      const photoMeta = document.getElementById("photoMeta");
+      const paletteTrack = document.getElementById("paletteTrack");
+      const prevButton = document.getElementById("prevButton");
+      const nextButton = document.getElementById("nextButton");
+      const indexToggle = document.getElementById("indexToggle");
+      const indexPanel = document.getElementById("indexPanel");
+      const indexClose = document.getElementById("indexClose");
+      const indexCount = document.getElementById("indexCount");
+      const contactSheet = document.getElementById("contactSheet");
+      const zoomLayer = document.getElementById("zoomLayer");
+      const zoomImage = document.getElementById("zoomImage");
+      const zoomYear = document.getElementById("zoomYear");
+      const zoomMeta = document.getElementById("zoomMeta");
+      const zoomClose = document.getElementById("zoomClose");
+
+      function hueOf(hex) {
+        const value = /^#[0-9a-f]{6}$/i.test(hex || "") ? hex.slice(1) : "8c8680";
+        const red = parseInt(value.slice(0, 2), 16) / 255;
+        const green = parseInt(value.slice(2, 4), 16) / 255;
+        const blue = parseInt(value.slice(4, 6), 16) / 255;
+        const max = Math.max(red, green, blue);
+        const min = Math.min(red, green, blue);
+        const delta = max - min;
+        if (!delta) return 0;
+        let hue = max === red
+          ? ((green - blue) / delta) % 6
+          : max === green
+            ? (blue - red) / delta + 2
+            : (red - green) / delta + 4;
+        hue *= 60;
+        return hue < 0 ? hue + 360 : hue;
+      }
+
+      function pad(value) {
+        return String(value).padStart(2, "0");
+      }
+
+      function initialIndex() {
+        const match = window.location.hash.match(/^#(\d+)$/);
+        const requested = match ? Number.parseInt(match[1], 10) - 1 : 0;
+        return Number.isInteger(requested) && requested >= 0 && requested < count ? requested : 0;
+      }
+
+      function metaFor(photo) {
+        return photo.cameraMeta || orientationLabel(photo.orientation);
+      }
+
+      function orientationLabel(orientation) {
+        const labels = {
+          landscape: "LANDSCAPE",
+          portrait: "PORTRAIT",
+          square: "SQUARE",
+          panorama: "PANORAMA"
+        };
+        return labels[orientation] || "PHOTOGRAPH";
+      }
+
+      function renderPalette() {
+        paletteTrack.style.setProperty("--count", count);
+        paletteTrack.innerHTML = photos.map((photo, index) => `
+          <button
+            class="tone-button"
+            type="button"
+            style="--swatch:${photo.color || "#8c8680"}"
+            data-index="${index}"
+            title="${pad(index + 1)}"
+            aria-label="查看第 ${index + 1} 张照片"
+          ></button>
+        `).join("");
+      }
+
+      function renderContactSheet() {
+        contactSheet.innerHTML = photos.map((photo, index) => `
+          <button
+            class="contact-item"
+            type="button"
+            style="--swatch:${photo.color || "#8c8680"}"
+            data-index="${index}"
+            data-number="${pad(index + 1)}"
+            aria-label="查看第 ${index + 1} 张照片"
+          >
+            <img src="${photo.thumb}" alt="${photo.alt || "摄影作品"}" loading="lazy" decoding="async" />
+          </button>
+        `).join("");
+      }
+
+      function updateActiveMarks() {
+        paletteTrack.querySelectorAll(".tone-button").forEach((button, index) => {
+          const isActive = index === activeIndex;
+          button.classList.toggle("is-active", isActive);
+          button.setAttribute("aria-current", isActive ? "true" : "false");
+        });
+      }
+
+      function showPhoto(index, immediate = false) {
+        if (!count) return;
+        const nextIndex = (index + count) % count;
+        const photo = photos[nextIndex];
+        const commit = () => {
+          activeIndex = nextIndex;
+          const number = pad(activeIndex + 1);
+          const tone = photo.color || "#8c8680";
+          stage.style.setProperty("--tone", tone);
+          stage.dataset.number = number;
+          stage.dataset.orientation = photo.orientation || "landscape";
+          currentCount.textContent = number;
+          photoYear.textContent = photo.year || "";
+          photoMeta.textContent = metaFor(photo);
+          stageImage.src = photo.thumb || photo.image;
+          stageImage.alt = photo.alt || "摄影作品";
+          photoButton.setAttribute("aria-label", `查看第 ${activeIndex + 1} 张完整照片`);
+          history.replaceState(null, "", `#${activeIndex + 1}`);
+          updateActiveMarks();
+          preloadAround(activeIndex);
+
+          const fullImage = new Image();
+          fullImage.onload = () => {
+            if (activeIndex === nextIndex) stageImage.src = photo.image;
+          };
+          fullImage.src = photo.image;
+
+          requestAnimationFrame(() => stage.classList.remove("is-changing"));
+        };
+
+        window.clearTimeout(changeTimer);
+        if (immediate) {
+          commit();
+        } else {
+          stage.classList.add("is-changing");
+          changeTimer = window.setTimeout(commit, 180);
+        }
+      }
+
+      function preloadAround(index) {
+        [-1, 1].forEach((offset) => {
+          const photo = photos[(index + offset + count) % count];
+          if (!photo) return;
+          const image = new Image();
+          image.src = photo.thumb || photo.image;
+        });
+      }
+
+      function step(direction) {
+        if (indexPanel.classList.contains("is-open") || zoomLayer.classList.contains("is-open")) return;
+        showPhoto(activeIndex + direction);
+      }
+
+      function holdWheel(milliseconds = 650) {
+        wheelUnlockAt = Date.now() + milliseconds;
+      }
+
+      function openIndex() {
+        indexPanel.classList.add("is-open");
+        indexPanel.setAttribute("aria-hidden", "false");
+        indexToggle.setAttribute("aria-expanded", "true");
+        const activeItem = contactSheet.querySelector(`[data-index="${activeIndex}"]`);
+        if (activeItem) {
+          requestAnimationFrame(() => {
+            const centeredTop = activeItem.offsetTop - (contactSheet.clientHeight - activeItem.offsetHeight) / 2;
+            contactSheet.scrollTop = Math.max(0, centeredTop);
+          });
+        }
+        indexClose.focus({ preventScroll: true });
+      }
+
+      function closeIndex(focusToggle = true) {
+        indexPanel.classList.remove("is-open");
+        indexPanel.setAttribute("aria-hidden", "true");
+        indexToggle.setAttribute("aria-expanded", "false");
+        holdWheel();
+        if (focusToggle) indexToggle.focus({ preventScroll: true });
+      }
+
+      function openZoom() {
+        const photo = photos[activeIndex];
+        if (!photo) return;
+        zoomImage.src = photo.image;
+        zoomImage.alt = photo.alt || "摄影作品";
+        zoomYear.textContent = photo.year || "";
+        zoomMeta.textContent = metaFor(photo);
+        zoomLayer.classList.add("is-open");
+        zoomLayer.setAttribute("aria-hidden", "false");
+        zoomClose.focus({ preventScroll: true });
+      }
+
+      function closeZoom(focusPhoto = true) {
+        zoomLayer.classList.remove("is-open");
+        zoomLayer.setAttribute("aria-hidden", "true");
+        if (focusPhoto) photoButton.focus({ preventScroll: true });
+      }
+
+      paletteTrack.addEventListener("click", (event) => {
+        const button = event.target.closest("[data-index]");
+        if (button) showPhoto(Number(button.dataset.index));
+      });
+
+      contactSheet.addEventListener("click", (event) => {
+        const button = event.target.closest("[data-index]");
+        if (!button) return;
+        showPhoto(Number(button.dataset.index), true);
+        closeIndex(false);
+        photoButton.focus({ preventScroll: true });
+      });
+
+      prevButton.addEventListener("click", () => step(-1));
+      nextButton.addEventListener("click", () => step(1));
+      indexToggle.addEventListener("click", openIndex);
+      indexClose.addEventListener("click", () => closeIndex());
+      photoButton.addEventListener("click", openZoom);
+      zoomClose.addEventListener("click", () => closeZoom());
+      zoomLayer.addEventListener("click", (event) => {
+        if (event.target === zoomLayer) closeZoom();
+      });
+
+      window.addEventListener("keydown", (event) => {
+        if (event.key === "Escape") {
+          if (zoomLayer.classList.contains("is-open")) closeZoom();
+          else if (indexPanel.classList.contains("is-open")) closeIndex();
+          return;
+        }
+        if (indexPanel.classList.contains("is-open") || zoomLayer.classList.contains("is-open")) return;
+        if (["ArrowRight", "ArrowDown", "PageDown", " "].includes(event.key)) {
+          event.preventDefault();
+          step(1);
+        }
+        if (["ArrowLeft", "ArrowUp", "PageUp"].includes(event.key)) {
+          event.preventDefault();
+          step(-1);
+        }
+        if (event.key === "Home") showPhoto(0);
+        if (event.key === "End") showPhoto(count - 1);
+        if (event.key.toLowerCase() === "i") openIndex();
+      });
+
+      window.addEventListener("wheel", (event) => {
+        if (indexPanel.classList.contains("is-open") || zoomLayer.classList.contains("is-open")) return;
+        event.preventDefault();
+        if (wheelLocked || Date.now() < wheelUnlockAt || Math.abs(event.deltaY) < 8) return;
+        wheelLocked = true;
+        step(event.deltaY > 0 ? 1 : -1);
+        window.setTimeout(() => { wheelLocked = false; }, 520);
+      }, { passive: false });
+
+      stage.addEventListener("touchstart", (event) => {
+        touchStartX = event.touches[0].clientX;
+        touchStartY = event.touches[0].clientY;
+      }, { passive: true });
+
+      stage.addEventListener("touchend", (event) => {
+        const deltaX = event.changedTouches[0].clientX - touchStartX;
+        const deltaY = event.changedTouches[0].clientY - touchStartY;
+        const distance = Math.abs(deltaX) > Math.abs(deltaY) ? deltaX : deltaY;
+        if (Math.abs(distance) > 46) step(distance < 0 ? 1 : -1);
+      }, { passive: true });
+
+      totalCount.textContent = pad(count);
+      indexCount.textContent = `${pad(count)} FRAMES`;
+      renderPalette();
+      renderContactSheet();
+      showPhoto(activeIndex, true);
+      window.setTimeout(() => loading.classList.add("is-hidden"), 220);
+    })();
+  </script>
+</body>
+</html>
